@@ -1,0 +1,56 @@
+# ==========================================
+# Backend Python & Neo4j .gitignore
+# ==========================================
+
+# Environment & Secrets
+.env
+.env.local
+!.env.example
+*.key
+*.pem
+
+# Python Virtual Environments & Bytecode
+.venv/
+env/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Distribution & Build
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+nosetests.xml
+coverage.xml
+
+# MLflow & Logs
+mlruns/
+mlartifacts/
+*.log
+
+# Neo4j Local Mounts
+neo4j_data/
+plugins/
+

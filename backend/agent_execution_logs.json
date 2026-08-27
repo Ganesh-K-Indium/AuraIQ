@@ -1,0 +1,401 @@
+[
+  {
+    "status": "SUCCESS",
+    "report": {
+      "client_id": "HNW-CLIENT-001",
+      "client_name": "Victoria Sterling",
+      "net_worth_tier": "Ultra-HNW ($25M+)",
+      "risk_profile": {
+        "tolerance_level": "Moderate Growth",
+        "target_equity_pct": 0.6,
+        "target_fixed_income_pct": 0.3,
+        "target_alternatives_pct": 0.1,
+        "max_drawdown_pct": 0.18,
+        "esg_preference": "High"
+      },
+      "portfolios": [
+        {
+          "portfolio_id": "PORT-VS-GROWTH-01",
+          "portfolio_name": "Sterling Flagship Discretionary Growth",
+          "portfolio_type": "Discretionary",
+          "total_aum": 12500000.0,
+          "holdings": [
+            {
+              "sector": null,
+              "current_value": 1170400.0,
+              "ticker_or_id": "PE-SEQUOIA-GROWTH-V",
+              "risk_rating": "High",
+              "name": "Sequoia Global Growth Fund V",
+              "allocation_pct": 0.095,
+              "asset_class": "Alternative"
+            },
+            {
+              "sector": null,
+              "current_value": 1437000.0,
+              "ticker_or_id": "BOND-MSFT-2030",
+              "risk_rating": "Low",
+              "name": "Microsoft Corp 3.3% Senior Notes 2030",
+              "allocation_pct": 0.115,
+              "asset_class": "FixedIncome"
+            },
+            {
+              "sector": null,
+              "current_value": 3479000.0,
+              "ticker_or_id": "BOND-UST-10Y-2034",
+              "risk_rating": "Low",
+              "name": "US Treasury 10-Year Benchmark Bond",
+              "allocation_pct": 0.278,
+              "asset_class": "FixedIncome"
+            },
+            {
+              "sector": "Technology",
+              "current_value": 1030400.0,
+              "ticker_or_id": "NVDA",
+              "risk_rating": "High",
+              "name": "NVIDIA Corporation",
+              "allocation_pct": 0.082,
+              "asset_class": "Equity"
+            },
+            {
+              "sector": "Technology",
+              "current_value": 2689200.0,
+              "ticker_or_id": "MSFT",
+              "risk_rating": "Moderate",
+              "name": "Microsoft Corporation",
+              "allocation_pct": 0.215,
+              "asset_class": "Equity"
+            },
+            {
+              "sector": "Technology",
+              "current_value": 2694000.0,
+              "ticker_or_id": "AAPL",
+              "risk_rating": "Moderate",
+              "name": "Apple Inc. Common Stock",
+              "allocation_pct": 0.215,
+              "asset_class": "Equity"
+            }
+          ]
+        }
+      ],
+      "suitability_evaluations": [
+        {
+          "client_id": "HNW-CLIENT-001",
+          "client_name": "Victoria Sterling",
+          "portfolio_id": "PORT-VS-GROWTH-01",
+          "portfolio_name": "Sterling Flagship Discretionary Growth",
+          "risk_mandate": "Moderate Growth",
+          "allocations": {
+            "actual": {
+              "equity_pct": 0.512,
+              "fixed_income_pct": 0.393,
+              "alternatives_pct": 0.095
+            },
+            "target": {
+              "equity_pct": 0.6,
+              "fixed_income_pct": 0.3,
+              "alternatives_pct": 0.1
+            },
+            "equity_drift_pct": -0.088
+          },
+          "suitability_status": "COMPLIANT",
+          "compliance_notes": [
+            "Portfolio is aligned with risk mandate and regulatory policies."
+          ]
+        }
+      ],
+      "trust_structures": [
+        {
+          "entity_name": "The Sterling Dynasty Irrevocable Trust",
+          "beneficiary_share_pct": 1.0,
+          "jurisdiction": "US-DE",
+          "entity_type": "IrrevocableTrust",
+          "entity_id": "TRUST-STERLING-DYNASTY"
+        }
+      ],
+      "sector_concentration_alerts": [
+        {
+          "sector": "Technology",
+          "exposure_records": [
+            {
+              "client_id": "HNW-CLIENT-001",
+              "client_name": "Victoria Sterling",
+              "portfolio_id": "PORT-VS-GROWTH-01",
+              "portfolio_name": "Sterling Flagship Discretionary Growth",
+              "ticker": "AAPL",
+              "instrument_name": "Apple Inc. Common Stock",
+              "allocation_pct": 0.215,
+              "exposure_value_usd": 2694000.0
+            },
+            {
+              "client_id": "HNW-CLIENT-001",
+              "client_name": "Victoria Sterling",
+              "portfolio_id": "PORT-VS-GROWTH-01",
+              "portfolio_name": "Sterling Flagship Discretionary Growth",
+              "ticker": "MSFT",
+              "instrument_name": "Microsoft Corporation",
+              "allocation_pct": 0.215,
+              "exposure_value_usd": 2689200.0
+            }
+          ]
+        }
+      ],
+      "recommendation_summary": [
+        "Portfolio 'Sterling Flagship Discretionary Growth' is underweight in Equities by 8.8%. Rebalancing recommended.",
+        "Concentration Notice: High systemic exposure to 'Technology' sector detected across portfolio holdings."
+      ]
+    },
+    "execution_traces": [
+      {
+        "step": 1,
+        "type": "PLAN",
+        "action": "Identify Client Profile & Portfolios",
+        "details": {
+          "client_id": "HNW-CLIENT-001",
+          "tool_target": "get_client_profile_and_holdings"
+        },
+        "timestamp": 1787728025.762461
+      },
+      {
+        "step": 2,
+        "type": "OBSERVATION",
+        "action": "Client Holdings Retrieved",
+        "details": {
+          "client_name": "Victoria Sterling",
+          "risk_tolerance": "Moderate Growth",
+          "portfolio_count": 1
+        },
+        "timestamp": 1787728025.819424
+      },
+      {
+        "step": 3,
+        "type": "TOOL_CALL",
+        "action": "Suitability Check for PORT-VS-GROWTH-01",
+        "details": {
+          "portfolio_id": "PORT-VS-GROWTH-01",
+          "suitability_status": "COMPLIANT"
+        },
+        "timestamp": 1787728025.831618
+      },
+      {
+        "step": 4,
+        "type": "OBSERVATION",
+        "action": "Trust & Legal Entity Analysis",
+        "details": {
+          "entities": [
+            {
+              "entity_name": "The Sterling Dynasty Irrevocable Trust",
+              "beneficiary_share_pct": 1.0,
+              "jurisdiction": "US-DE",
+              "entity_type": "IrrevocableTrust",
+              "entity_id": "TRUST-STERLING-DYNASTY"
+            }
+          ]
+        },
+        "timestamp": 1787728025.835082
+      },
+      {
+        "step": 5,
+        "type": "OBSERVATION",
+        "action": "Sector Concentration Risk Screen",
+        "details": {
+          "screened_sectors": [
+            "Technology"
+          ],
+          "alerts": 1
+        },
+        "timestamp": 1787728025.842429
+      },
+      {
+        "step": 6,
+        "type": "SYNTHESIS",
+        "action": "Final Advisory Recommendations Compiled",
+        "details": {
+          "summary_length": 2
+        },
+        "timestamp": 1787728025.842438
+      }
+    ]
+  },
+  {
+    "status": "SUCCESS",
+    "report": {
+      "client_id": "HNW-CLIENT-002",
+      "client_name": "Marcus Thorne",
+      "net_worth_tier": "HNW ($5M-$10M)",
+      "risk_profile": {
+        "tolerance_level": "Conservative Capital Preservation",
+        "target_equity_pct": 0.25,
+        "target_fixed_income_pct": 0.7,
+        "target_alternatives_pct": 0.05,
+        "max_drawdown_pct": 0.08,
+        "esg_preference": "Neutral"
+      },
+      "portfolios": [
+        {
+          "portfolio_id": "PORT-MT-INCOME-02",
+          "portfolio_name": "Thorne Capital Preservation & Fixed Income",
+          "portfolio_type": "Advisory",
+          "total_aum": 6000000.0,
+          "holdings": [
+            {
+              "sector": null,
+              "current_value": 287520.0,
+              "ticker_or_id": "ALT-BREIT-RE-INCOME",
+              "risk_rating": "Moderate",
+              "name": "Blackstone Real Estate Income Trust",
+              "allocation_pct": 0.048,
+              "asset_class": "RealEstate"
+            },
+            {
+              "sector": null,
+              "current_value": 1245400.0,
+              "ticker_or_id": "BOND-MSFT-2030",
+              "risk_rating": "Low",
+              "name": "Microsoft Corp 3.3% Senior Notes 2030",
+              "allocation_pct": 0.207,
+              "asset_class": "FixedIncome"
+            },
+            {
+              "sector": null,
+              "current_value": 2982000.0,
+              "ticker_or_id": "BOND-UST-10Y-2034",
+              "risk_rating": "Low",
+              "name": "US Treasury 10-Year Benchmark Bond",
+              "allocation_pct": 0.497,
+              "asset_class": "FixedIncome"
+            },
+            {
+              "sector": "Healthcare",
+              "current_value": 736080.0,
+              "ticker_or_id": "LLY",
+              "risk_rating": "Moderate",
+              "name": "Eli Lilly and Company",
+              "allocation_pct": 0.123,
+              "asset_class": "Equity"
+            },
+            {
+              "sector": "Financials",
+              "current_value": 749000.0,
+              "ticker_or_id": "JPM",
+              "risk_rating": "Moderate",
+              "name": "JPMorgan Chase & Co.",
+              "allocation_pct": 0.125,
+              "asset_class": "Equity"
+            }
+          ]
+        }
+      ],
+      "suitability_evaluations": [
+        {
+          "client_id": "HNW-CLIENT-002",
+          "client_name": "Marcus Thorne",
+          "portfolio_id": "PORT-MT-INCOME-02",
+          "portfolio_name": "Thorne Capital Preservation & Fixed Income",
+          "risk_mandate": "Conservative Capital Preservation",
+          "allocations": {
+            "actual": {
+              "equity_pct": 0.248,
+              "fixed_income_pct": 0.704,
+              "alternatives_pct": 0.048
+            },
+            "target": {
+              "equity_pct": 0.25,
+              "fixed_income_pct": 0.7,
+              "alternatives_pct": 0.05
+            },
+            "equity_drift_pct": -0.002
+          },
+          "suitability_status": "COMPLIANT",
+          "compliance_notes": [
+            "Portfolio is aligned with risk mandate and regulatory policies."
+          ]
+        }
+      ],
+      "trust_structures": [
+        {
+          "entity_name": null,
+          "beneficiary_share_pct": null,
+          "jurisdiction": null,
+          "entity_type": null,
+          "entity_id": null
+        }
+      ],
+      "sector_concentration_alerts": [],
+      "recommendation_summary": [
+        "Marcus Thorne's portfolios are fully aligned with investment objectives and regulatory mandates."
+      ]
+    },
+    "execution_traces": [
+      {
+        "step": 1,
+        "type": "PLAN",
+        "action": "Identify Client Profile & Portfolios",
+        "details": {
+          "client_id": "HNW-CLIENT-002",
+          "tool_target": "get_client_profile_and_holdings"
+        },
+        "timestamp": 1787728025.847913
+      },
+      {
+        "step": 2,
+        "type": "OBSERVATION",
+        "action": "Client Holdings Retrieved",
+        "details": {
+          "client_name": "Marcus Thorne",
+          "risk_tolerance": "Conservative Capital Preservation",
+          "portfolio_count": 1
+        },
+        "timestamp": 1787728025.853033
+      },
+      {
+        "step": 3,
+        "type": "TOOL_CALL",
+        "action": "Suitability Check for PORT-MT-INCOME-02",
+        "details": {
+          "portfolio_id": "PORT-MT-INCOME-02",
+          "suitability_status": "COMPLIANT"
+        },
+        "timestamp": 1787728025.8575318
+      },
+      {
+        "step": 4,
+        "type": "OBSERVATION",
+        "action": "Trust & Legal Entity Analysis",
+        "details": {
+          "entities": [
+            {
+              "entity_name": null,
+              "beneficiary_share_pct": null,
+              "jurisdiction": null,
+              "entity_type": null,
+              "entity_id": null
+            }
+          ]
+        },
+        "timestamp": 1787728025.86061
+      },
+      {
+        "step": 5,
+        "type": "OBSERVATION",
+        "action": "Sector Concentration Risk Screen",
+        "details": {
+          "screened_sectors": [
+            "Financials",
+            "Healthcare"
+          ],
+          "alerts": 0
+        },
+        "timestamp": 1787728025.8670452
+      },
+      {
+        "step": 6,
+        "type": "SYNTHESIS",
+        "action": "Final Advisory Recommendations Compiled",
+        "details": {
+          "summary_length": 1
+        },
+        "timestamp": 1787728025.8670511
+      }
+    ]
+  }
+]

@@ -1,0 +1,84 @@
+# ==========================================
+# Root Monorepo .gitignore: AURA Wealth IQ
+# ==========================================
+
+# Environment & Secrets (Never commit credentials)
+.env
+.env*.local
+!.env.example
+backend/.env
+frontend/.env.local
+*.key
+*.pem
+
+# Operating System & IDE
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==========================================
+# Python & Backend Artifacts
+# ==========================================
+.venv/
+env/
+venv/
+ENV/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pytest_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+
+# MLflow & Local Traces
+mlruns/
+mlartifacts/
+*.log
+
+# Neo4j & Docker Volumes
+neo4j_data/
+backend/neo4j_data/
+backend/plugins/
+
+# ==========================================
+# Next.js & Frontend Artifacts
+# ==========================================
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.turbo/
+node_modules/
+.next/
+out/
+build/
+.turbo/
+
+# Logs & Debugging
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Next.js bundles & TypeScript build info
+next-env.d.ts.bak
+*.tsbuildinfo
+
