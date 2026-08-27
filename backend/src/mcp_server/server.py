@@ -5,8 +5,8 @@ Exposes Databricks Unity Catalog tools to Antigravity, LLM agents, and local IDE
 via standard MCP protocol.
 """
 
-from typing import Any, Dict, List
-from mcp.server.fastmcp import FastMCP
+from typing import Any, Dict, List, Optional
+from fastmcp import FastMCP
 import structlog
 from src.tools.uc_portfolio_tools import (
     get_client_profile_and_holdings,
@@ -36,7 +36,7 @@ def tool_get_client_profile_and_holdings(client_id: str) -> Dict[str, Any]:
     name="check_portfolio_risk_suitability",
     description="Evaluate whether an investment portfolio complies with client risk tolerance and regulatory policies (Reg BI / MiFID II)."
 )
-def tool_check_portfolio_risk_suitability(client_id: str, portfolio_id: str) -> Dict[str, Any]:
+def tool_check_portfolio_risk_suitability(client_id: str, portfolio_id: Optional[str] = None) -> Dict[str, Any]:
     """Check portfolio risk suitability and equity drift."""
     logger.info(
         "mcp_tool_invoked",
