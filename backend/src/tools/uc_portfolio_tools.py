@@ -116,7 +116,7 @@ def get_client_profile_and_holdings(client_id: str) -> Dict[str, Any]:
     }
 
 
-def check_portfolio_risk_suitability(client_id: str, portfolio_id: str) -> Dict[str, Any]:
+def check_portfolio_risk_suitability(client_id: str, portfolio_id: Optional[str] = None) -> Dict[str, Any]:
     """
     Evaluate whether a specific investment portfolio adheres to client risk mandate and
     FIBO regulatory compliance policies (e.g. Reg BI / MiFID II suitability).
@@ -125,14 +125,16 @@ def check_portfolio_risk_suitability(client_id: str, portfolio_id: str) -> Dict[
 
     Args:
         client_id: Unique identifier for the HNW Client (e.g. 'HNW-CLIENT-001').
-        portfolio_id: Unique identifier for the Portfolio (e.g. 'PORT-VS-GROWTH-01').
+        portfolio_id: Optional unique identifier for the Portfolio (e.g. 'PORT-VS-GROWTH-01').
+                      If omitted or not found, automatically evaluates the client's primary portfolio.
 
     Returns:
         Dict containing suitability metrics: actual vs target asset allocation,
         equity concentration, compliance policy checks, and violation flags.
     """
     query = """
-    MATCH (c:`fibo-fnd-pty:Person` {client_id: $client_id})-[:OWNS_ACCOUNT]->(p:`fibo-fnd-agr:InvestmentPortfolio` {portfolio_id: $portfolio_id})
+    MATCH (c:`fibo-fnd-pty:Person` {client_id: $client_id})-[:OWNS_ACCOUNT]->(p:`fibo-fnd-agr:InvestmentPortfolio`)
+    WHERE ($portfolio_id IS NULL OR $portfolio_id = "" OR p.portfolio_id = $portfolio_id)
     OPTIONAL MATCH (c)-[:HAS_RISK_PROFILE]->(rp:`fibo-fbc-pas:RiskProfile`)
     OPTIONAL MATCH (p)-[:SUBJECT_TO]->(cp:`fibo-reg-rep:CompliancePolicy`)
     OPTIONAL MATCH (p)-[h:CONTAINS_HOLDING]->(inst:FinancialInstrument)
@@ -160,12 +162,19 @@ def check_portfolio_risk_suitability(client_id: str, portfolio_id: str) -> Dict[
            cp.policy_id AS governing_compliance_policy,
            cp.max_equity_allocation_conservative AS policy_max_equity_conservative,
            holdings
+    LIMIT 1
     """
     results = neo4j_client.execute_query(
-        query, {"client_id": client_id, "portfolio_id": portfolio_id}
+        query, {"client_id": client_id, "portfolio_id": portfolio_id or None}
     )
     if not results:
-        return {"error": f"Portfolio '{portfolio_id}' for client '{client_id}' not found."}
+        # Fallback to resolving any portfolio owned by the client
+        results = neo4j_client.execute_query(
+            query, {"client_id": client_id, "portfolio_id": None}
+        )
+
+    if not results:
+        return {"error": f"No portfolio found for client '{client_id}'."}
 
     data = results[0]
     equity_diff = (data["actual_equity_pct"] or 0) - (data["target_equity_pct"] or 0)

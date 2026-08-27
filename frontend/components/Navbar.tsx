@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 
 interface NavbarProps {
-  activeTab: "dashboard" | "copilot" | "graph" | "cypher";
-  setActiveTab: (tab: "dashboard" | "copilot" | "graph" | "cypher") => void;
+  activeTab: "landing" | "dashboard" | "copilot" | "graph" | "cypher";
+  setActiveTab: (tab: "landing" | "dashboard" | "copilot" | "graph" | "cypher") => void;
   selectedClientId: string;
   setSelectedClientId: (id: string) => void;
   clients: Array<{ client_id: string; name: string; net_worth_tier: string; total_aum: number }>;
@@ -63,17 +63,21 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="border-b border-slate-800/90 bg-[#090d16]/95 backdrop-blur-xl sticky top-0 z-50">
       <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Platform Identity */}
-          <div className="flex items-center space-x-4">
+          {/* Platform Identity (Clickable to return Home) */}
+          <div 
+            onClick={() => setActiveTab("landing")}
+            className="flex items-center space-x-4 cursor-pointer group"
+            title="Return to Home Landing"
+          >
             <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 p-[1.5px] shadow-lg shadow-emerald-500/20">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 p-[1.5px] shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
                 <div className="h-full w-full bg-[#070a12] rounded-[10px] flex items-center justify-center">
                   <Sparkles className="h-5 w-5 text-emerald-400" />
                 </div>
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <span className="font-extrabold text-lg tracking-tight text-white font-mono">
+                  <span className="font-extrabold text-lg tracking-tight text-white font-mono group-hover:text-emerald-400 transition-colors">
                     AURA<span className="text-emerald-400 font-sans font-semibold">Wealth</span>
                   </span>
                   <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-md tracking-wider">

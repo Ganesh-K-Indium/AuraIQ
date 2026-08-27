@@ -246,15 +246,90 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({ selectedClientId }) =>
         }
       }
 
+const getNodeTheme = (label: string, isDark: boolean) => {
+  switch (label) {
+    case "Person":
+      return {
+        color: isDark ? "#818cf8" : "#4f46e5",
+        bg: isDark ? "#0f1322" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#a5b4fc" : "#4338ca",
+      };
+    case "InvestmentPortfolio":
+      return {
+        color: isDark ? "#34d399" : "#059669",
+        bg: isDark ? "#0a1715" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#6ee7b7" : "#047857",
+      };
+    case "Share":
+      return {
+        color: isDark ? "#38bdf8" : "#0284c7",
+        bg: isDark ? "#091522" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#7dd3fc" : "#0369a1",
+      };
+    case "Bond":
+      return {
+        color: isDark ? "#fbbf24" : "#d97706",
+        bg: isDark ? "#17140b" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#fde68a" : "#b45309",
+      };
+    case "AlternativeAsset":
+      return {
+        color: isDark ? "#c084fc" : "#9333ea",
+        bg: isDark ? "#150d20" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#e9d5ff" : "#7e22ce",
+      };
+    case "LegalEntity":
+      return {
+        color: isDark ? "#fb7185" : "#e11d48",
+        bg: isDark ? "#1b0b12" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#fecdd3" : "#be123c",
+      };
+    case "CompliancePolicy":
+      return {
+        color: isDark ? "#2dd4bf" : "#0d9488",
+        bg: isDark ? "#091716" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#99f6e4" : "#0f766e",
+      };
+    default:
+      return {
+        color: isDark ? "#94a3b8" : "#64748b",
+        bg: isDark ? "#0f172a" : "#ffffff",
+        text: isDark ? "#ffffff" : "#0f172a",
+        sub: isDark ? "#94a3b8" : "#475569",
+        tag: isDark ? "#cbd5e1" : "#475569",
+      };
+  }
+};
+
       ctx.save();
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, width, height);
 
-      // Deep Dark Background Grid
-      ctx.fillStyle = "rgba(30, 41, 59, 0.35)";
+      const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
+
+      // Canvas Background fill
+      ctx.fillStyle = isDark ? "#070a12" : "#f8fafc";
+      ctx.fillRect(0, 0, width, height);
+
+      // Background Grid Dots
+      ctx.fillStyle = isDark ? "rgba(30, 41, 59, 0.4)" : "rgba(203, 213, 225, 0.7)";
       for (let gx = 0; gx < width; gx += 28) {
         for (let gy = 0; gy < height; gy += 28) {
-          ctx.fillRect(gx, gy, 1, 1);
+          ctx.fillRect(gx, gy, 1.5, 1.5);
         }
       }
 
@@ -279,10 +354,10 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({ selectedClientId }) =>
         ctx.moveTo(source.x || 0, source.y || 0);
         ctx.lineTo(target.x || 0, target.y || 0);
         ctx.strokeStyle = isHighlighted
-          ? "#38bdf8"
+          ? (isDark ? "#38bdf8" : "#0284c7")
           : isDimmed
-          ? "rgba(51, 65, 85, 0.2)"
-          : "rgba(100, 116, 139, 0.4)";
+          ? (isDark ? "rgba(51, 65, 85, 0.2)" : "rgba(203, 213, 225, 0.3)")
+          : (isDark ? "rgba(100, 116, 139, 0.45)" : "rgba(148, 163, 184, 0.7)");
         ctx.lineWidth = isHighlighted ? 2.5 : 1.2;
         ctx.stroke();
 
@@ -291,15 +366,21 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({ selectedClientId }) =>
           const midX = ((source.x || 0) + (target.x || 0)) / 2;
           const midY = ((source.y || 0) + (target.y || 0)) / 2;
 
-          ctx.fillStyle = isHighlighted ? "#0f172a" : "#0a0f1d";
+          ctx.fillStyle = isHighlighted
+            ? (isDark ? "#0f172a" : "#ffffff")
+            : (isDark ? "#0a0f1d" : "#ffffff");
           ctx.beginPath();
           ctx.roundRect(midX - 35, midY - 8, 70, 16, 4);
           ctx.fill();
-          ctx.strokeStyle = isHighlighted ? "#38bdf8" : "rgba(100, 116, 139, 0.4)";
+          ctx.strokeStyle = isHighlighted
+            ? (isDark ? "#38bdf8" : "#0284c7")
+            : (isDark ? "rgba(100, 116, 139, 0.4)" : "#cbd5e1");
           ctx.lineWidth = 1;
           ctx.stroke();
 
-          ctx.fillStyle = isHighlighted ? "#38bdf8" : "#94a3b8";
+          ctx.fillStyle = isHighlighted
+            ? (isDark ? "#38bdf8" : "#0284c7")
+            : (isDark ? "#94a3b8" : "#475569");
           ctx.font = "bold 8.5px monospace";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
@@ -320,42 +401,46 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({ selectedClientId }) =>
         const cardX = (n.x || 0) - cardWidth / 2;
         const cardY = (n.y || 0) - cardHeight / 2;
 
+        const theme = getNodeTheme(n.label, isDark);
+
         // Glowing selection halo
         if (isSelected) {
           ctx.beginPath();
           ctx.roundRect(cardX - 4, cardY - 4, cardWidth + 8, cardHeight + 8, 10);
-          ctx.fillStyle = "rgba(56, 189, 248, 0.25)";
+          ctx.fillStyle = isDark ? "rgba(56, 189, 248, 0.25)" : "rgba(2, 132, 199, 0.2)";
           ctx.fill();
         }
 
         // Main Node Box
         ctx.beginPath();
         ctx.roundRect(cardX, cardY, cardWidth, cardHeight, 8);
-        ctx.fillStyle = isDimmed ? "rgba(15, 23, 42, 0.3)" : "#0d1322";
+        ctx.fillStyle = isDimmed
+          ? (isDark ? "rgba(15, 23, 42, 0.3)" : "rgba(241, 245, 249, 0.4)")
+          : theme.bg;
         ctx.fill();
         ctx.strokeStyle = isSelected
-          ? "#38bdf8"
+          ? (isDark ? "#38bdf8" : "#0284c7")
           : isDimmed
-          ? "rgba(51, 65, 85, 0.2)"
-          : n.color || "#3b82f6";
-        ctx.lineWidth = isSelected ? 2 : 1.2;
+          ? (isDark ? "rgba(51, 65, 85, 0.2)" : "rgba(203, 213, 225, 0.4)")
+          : theme.color;
+        ctx.lineWidth = isSelected ? 2.5 : 1.5;
         ctx.stroke();
 
         // Left Color Bar
         ctx.beginPath();
         ctx.roundRect(cardX, cardY, 4, cardHeight, [8, 0, 0, 8]);
-        ctx.fillStyle = isDimmed ? "rgba(71, 85, 105, 0.3)" : n.color || "#3b82f6";
+        ctx.fillStyle = isDimmed ? (isDark ? "rgba(71, 85, 105, 0.3)" : "rgba(203, 213, 225, 0.4)") : theme.color;
         ctx.fill();
 
         // Category Tag (Top Line)
-        ctx.fillStyle = isDimmed ? "rgba(100, 116, 139, 0.3)" : n.color || "#38bdf8";
+        ctx.fillStyle = isDimmed ? (isDark ? "rgba(100, 116, 139, 0.3)" : "rgba(148, 163, 184, 0.4)") : theme.tag;
         ctx.font = "bold 8px monospace";
         ctx.textAlign = "left";
         ctx.textBaseline = "top";
         ctx.fillText(n.label.toUpperCase(), cardX + 9, cardY + 7);
 
         // Node Name / Ticker (Bold Primary Line)
-        ctx.fillStyle = isDimmed ? "rgba(148, 163, 184, 0.3)" : "#ffffff";
+        ctx.fillStyle = isDimmed ? (isDark ? "rgba(148, 163, 184, 0.3)" : "rgba(148, 163, 184, 0.4)") : theme.text;
         ctx.font = "bold 10px sans-serif";
         const displayName = n.name.length > 15 ? n.name.slice(0, 14) + "…" : n.name;
         ctx.fillText(displayName, cardX + 9, cardY + 18);
@@ -371,7 +456,7 @@ export const GraphCanvas: React.FC<GraphCanvasProps> = ({ selectedClientId }) =>
         }
 
         if (subtitle) {
-          ctx.fillStyle = isDimmed ? "rgba(100, 116, 139, 0.2)" : "#94a3b8";
+          ctx.fillStyle = isDimmed ? (isDark ? "rgba(100, 116, 139, 0.2)" : "rgba(148, 163, 184, 0.3)") : theme.sub;
           ctx.font = "8px sans-serif";
           ctx.fillText(subtitle, cardX + 9, cardY + 31);
         }

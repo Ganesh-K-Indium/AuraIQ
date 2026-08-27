@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { LandingHero } from "@/components/LandingHero";
 import { ExecutiveDashboard } from "@/components/ExecutiveDashboard";
 import { AgentCopilot } from "@/components/AgentCopilot";
 import { GraphCanvas } from "@/components/GraphCanvas";
 import { CypherStudio } from "@/components/CypherStudio";
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "copilot" | "graph" | "cypher">("dashboard");
+  const [activeTab, setActiveTab] = useState<"landing" | "dashboard" | "copilot" | "graph" | "cypher">("landing");
   const [selectedClientId, setSelectedClientId] = useState<string>("HNW-CLIENT-001");
   const [clients, setClients] = useState<any[]>([]);
   const [clientData, setClientData] = useState<any | null>(null);
@@ -54,22 +55,34 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-[#070a12] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/20">
-      {/* Fixed Top Navbar */}
-      <div className="shrink-0 z-50">
-        <Navbar
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          selectedClientId={selectedClientId}
-          setSelectedClientId={setSelectedClientId}
-          clients={clients}
-          systemHealth={systemHealth}
-        />
-      </div>
+      {/* Fixed Top Navbar (Only visible inside application workspace) */}
+      {activeTab !== "landing" && (
+        <div className="shrink-0 z-50 animate-fadeIn">
+          <Navbar
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            selectedClientId={selectedClientId}
+            setSelectedClientId={setSelectedClientId}
+            clients={clients}
+            systemHealth={systemHealth}
+          />
+        </div>
+      )}
 
       {/* Scrollable Viewport Container */}
       <div className="flex-1 overflow-y-auto flex flex-col">
         {/* Main Content Area */}
-        <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <main className={`flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 lg:px-8 ${activeTab === "landing" ? "py-4" : "py-8"}`}>
+          {activeTab === "landing" && (
+            <LandingHero
+              onEnter={(tab) => setActiveTab(tab || "dashboard")}
+              clients={clients}
+              selectedClientId={selectedClientId}
+              setSelectedClientId={setSelectedClientId}
+              systemHealth={systemHealth}
+            />
+          )}
+
           {activeTab === "dashboard" && (
             <ExecutiveDashboard
               key={selectedClientId}

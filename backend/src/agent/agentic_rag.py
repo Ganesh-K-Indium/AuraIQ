@@ -46,14 +46,14 @@ OPENAI_TOOLS = [
         "type": "function",
         "function": {
             "name": "check_portfolio_risk_suitability",
-            "description": "Evaluates portfolio asset allocation drift against target mandate and audits compliance under SEC Regulation Best Interest (Reg BI).",
+            "description": "Evaluates portfolio asset allocation drift against target mandate and audits compliance under SEC Regulation Best Interest (Reg BI). If portfolio_id is omitted, automatically evaluates the client's primary portfolio.",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "client_id": {"type": "string", "description": "Unique Client identifier"},
-                    "portfolio_id": {"type": "string", "description": "Portfolio identifier (e.g. PORT-VS-GROWTH-01)"},
+                    "client_id": {"type": "string", "description": "Unique Client identifier (e.g. HNW-CLIENT-001 or HNW-CLIENT-002)"},
+                    "portfolio_id": {"type": "string", "description": "Optional portfolio identifier (e.g. 'PORT-VS-GROWTH-01' or 'PORT-MT-INCOME-02'). If omitted, defaults to primary portfolio."},
                 },
-                "required": ["client_id", "portfolio_id"],
+                "required": ["client_id"],
             },
         },
     },
@@ -181,14 +181,29 @@ class WealthAgentRAG:
         traces: List[Dict[str, Any]] = []
         step_idx = 1
 
+        client_summary = get_client_profile_and_holdings(client_id)
+        c_name = client_summary.get("name", "Client")
+        c_tier = client_summary.get("net_worth_tier", "HNW")
+        c_ports = client_summary.get("portfolios", [])
+        primary_pid = c_ports[0]["portfolio_id"] if c_ports else ""
+        primary_pname = c_ports[0]["portfolio_name"] if c_ports else "Primary Portfolio"
+        c_mandate = client_summary.get("risk_profile", {}).get("tolerance_level", "Standard")
+
         system_prompt = f"""You are AURA Wealth Copilot, an elite AI Investment Strategist & Risk Officer powered by the FIBO Knowledge Graph and Databricks Unity Catalog.
-Current Active Client Context: Client ID '{client_id}'.
+Current Active Client Context:
+- Client ID: '{client_id}'
+- Client Name: '{c_name}'
+- Net Worth Tier: '{c_tier}'
+- Active Portfolio ID: '{primary_pid}' ({primary_pname})
+- Risk Mandate: '{c_mandate}'
+
 You have access to 5 governed Databricks Unity Catalog functions to retrieve holdings, risk profiles, SEC Reg BI compliance policies, Delaware trust structures, and live Cypher queries.
 
 Instructions:
 1. Always call the appropriate tool(s) first before answering questions about holdings, risk, trusts, or compliance.
-2. Structure your answers in clean, professional markdown with bold metrics and bullet points.
-3. Be precise with financial terminology (AUM, SEC Reg BI, Asset Drift, Yield, MiFID II, Delaware Nexus)."""
+2. When calling check_portfolio_risk_suitability, pass client_id='{client_id}' and portfolio_id='{primary_pid}' (or omit portfolio_id to use default).
+3. Structure your answers in clean, professional markdown with bold metrics and bullet points.
+4. Be precise with financial terminology (AUM, SEC Reg BI, Asset Drift, Yield, MiFID II, Delaware Nexus)."""
 
         messages = [
             {"role": "system", "content": system_prompt},
@@ -303,14 +318,29 @@ Instructions:
                 yield f"data: {json.dumps(plan_event)}\n\n"
                 step_idx += 1
 
+                client_summary = get_client_profile_and_holdings(client_id)
+                c_name = client_summary.get("name", "Client")
+                c_tier = client_summary.get("net_worth_tier", "HNW")
+                c_ports = client_summary.get("portfolios", [])
+                primary_pid = c_ports[0]["portfolio_id"] if c_ports else ""
+                primary_pname = c_ports[0]["portfolio_name"] if c_ports else "Primary Portfolio"
+                c_mandate = client_summary.get("risk_profile", {}).get("tolerance_level", "Standard")
+
                 system_prompt = f"""You are AURA Wealth Copilot, an elite AI Investment Strategist & Risk Officer powered by the FIBO Knowledge Graph and Databricks Unity Catalog.
-Current Active Client Context: Client ID '{client_id}'.
+Current Active Client Context:
+- Client ID: '{client_id}'
+- Client Name: '{c_name}'
+- Net Worth Tier: '{c_tier}'
+- Active Portfolio ID: '{primary_pid}' ({primary_pname})
+- Risk Mandate: '{c_mandate}'
+
 You have access to 5 governed Databricks Unity Catalog functions to retrieve holdings, risk profiles, SEC Reg BI compliance policies, Delaware trust structures, and live Cypher queries.
 
 Instructions:
 1. Always call the appropriate tool(s) first before answering questions about holdings, risk, trusts, or compliance.
-2. Structure your answers in clean, professional markdown with bold metrics and bullet points.
-3. Be precise with financial terminology (AUM, SEC Reg BI, Asset Drift, Yield, MiFID II, Delaware Nexus)."""
+2. When calling check_portfolio_risk_suitability, pass client_id='{client_id}' and portfolio_id='{primary_pid}' (or omit portfolio_id to use default).
+3. Structure your answers in clean, professional markdown with bold metrics and bullet points.
+4. Be precise with financial terminology (AUM, SEC Reg BI, Asset Drift, Yield, MiFID II, Delaware Nexus)."""
 
                 messages = [
                     {"role": "system", "content": system_prompt},
@@ -489,7 +519,7 @@ Instructions:
                 reply += f"- Execute **{direction}** of approximately **${amount_delta:,.2f}** to restore mandate target.\n"
                 reply += f"- Reallocate proceeds into benchmark Fixed Income (e.g. US Treasury 10-Year) to mitigate portfolio volatility."
             else:
-                reply += "Portfolio is within acceptable $\pm 5\%$ drift tolerance."
+                reply += "Portfolio is within acceptable $\\pm 5\\%$ drift tolerance."
 
         elif any(k in query for k in ["tech", "concentration", "sector", "semiconductor", "apple", "nvidia"]):
             traces.append({
