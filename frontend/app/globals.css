@@ -95,8 +95,6 @@ html:not(.dark) .bg-\[\#0e1320\] {
   border-color: #e2e8f0 !important;
 }
 
-/* Top Banner Gradients in Light Mode (Soft, Refined Lavender-White) */
-html:not(.dark) .bg-gradient-to-r {
 /* Text Gradients in Light Mode */
 html:not(.dark) .bg-clip-text {
   background-image: linear-gradient(to right, #059669, #0d9488, #0284c7) !important;
