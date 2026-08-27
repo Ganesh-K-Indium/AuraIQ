@@ -15,6 +15,8 @@ import {
   Moon,
 } from "lucide-react";
 
+import { useTheme } from "@/components/ThemeProvider";
+
 interface NavbarProps {
   activeTab: "landing" | "dashboard" | "copilot" | "graph" | "cypher";
   setActiveTab: (tab: "landing" | "dashboard" | "copilot" | "graph" | "cypher") => void;
@@ -33,31 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   systemHealth,
 }) => {
   const currentClient = clients.find((c) => c.client_id === selectedClientId);
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    // Check initial preference or default to dark
-    const stored = localStorage.getItem("aura_theme");
-    if (stored === "light") {
-      setIsDark(false);
-      document.documentElement.classList.remove("dark");
-    } else {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("aura_theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("aura_theme", "light");
-    }
-  };
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <header className="border-b border-slate-800/90 bg-[#090d16]/95 backdrop-blur-xl sticky top-0 z-50">

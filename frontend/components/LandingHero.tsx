@@ -20,6 +20,8 @@ import {
   Moon,
 } from "lucide-react";
 
+import { useTheme } from "@/components/ThemeProvider";
+
 interface LandingHeroProps {
   onEnter: (tab?: "dashboard" | "copilot" | "graph" | "cypher") => void;
   clients: Array<{ client_id: string; name: string; net_worth_tier: string; total_aum: number }>;
@@ -35,30 +37,7 @@ export const LandingHero: React.FC<LandingHeroProps> = ({
   setSelectedClientId,
   systemHealth,
 }) => {
-  const [isDark, setIsDark] = useState(true);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("aura_theme");
-    if (stored === "light") {
-      setIsDark(false);
-      document.documentElement.classList.remove("dark");
-    } else {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    setIsDark(nextDark);
-    if (nextDark) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("aura_theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("aura_theme", "light");
-    }
-  };
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <div className="space-y-12 animate-fadeIn pb-12 font-sans">

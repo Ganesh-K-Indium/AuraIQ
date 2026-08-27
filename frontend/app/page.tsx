@@ -54,7 +54,7 @@ export default function Home() {
   const currentClient = clients.find((c) => c.client_id === selectedClientId);
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-[#070a12] text-slate-100 flex flex-col font-sans selection:bg-emerald-500/20">
+    <div className="h-screen w-screen overflow-hidden flex flex-col font-sans selection:bg-emerald-500/20" style={{ backgroundColor: "var(--background)", color: "var(--foreground)" }}>
       {/* Fixed Top Navbar (Only visible inside application workspace) */}
       {activeTab !== "landing" && (
         <div className="shrink-0 z-50 animate-fadeIn">
