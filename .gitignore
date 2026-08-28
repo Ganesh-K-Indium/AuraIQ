@@ -55,6 +55,9 @@ chroma_wealth_db/
 **/chroma_wealth_db/
 *.sqlite3
 *.db-journal
+*.ses
+:memory:*
+
 
 # MLflow & Local Experiment Traces
 mlruns/
