@@ -302,3 +302,61 @@ def query_fibo_knowledge_graph(cypher_query: str) -> List[Dict[str, Any]]:
 
     return neo4j_client.execute_query(cleaned)
 
+
+def execute_dynamic_text_to_cypher(natural_query: str) -> Dict[str, Any]:
+    """
+    Translates an ad-hoc natural language question into a validated read-only Cypher query
+    and executes it against the FIBO Knowledge Graph with sub-millisecond execution telemetry.
+
+    Unity Catalog Mapping: wealth_mgmt_catalog.fibo_knowledge_graph.execute_dynamic_text_to_cypher
+    """
+    from src.agent.text_to_cypher import execute_text_to_cypher
+    return execute_text_to_cypher(natural_query)
+
+
+def generate_and_execute_text_to_cypher(natural_query: str) -> Dict[str, Any]:
+    """Unity Catalog tool mapping for dynamic Text-to-Cypher."""
+    return execute_dynamic_text_to_cypher(natural_query)
+
+
+def search_wealth_documents(
+    query: str,
+    client_id: Optional[str] = None,
+    entity_filter: Optional[str] = None,
+    top_k: int = 3
+) -> List[Dict[str, Any]]:
+    """
+    Searches unstructured SEC Reg BI regulatory bulletins, client Investment Policy Statements (IPS),
+    and 10-K risk disclosures using ChromaDB dense embeddings with metadata cross-linked to FIBO entities.
+
+    Unity Catalog Mapping: wealth_mgmt_catalog.fibo_knowledge_graph.search_wealth_documents
+    """
+    from src.agent.wealth_vector_store import wealth_vector_store
+    results = wealth_vector_store.search(query=query, entity_filter=entity_filter, client_id=client_id, top_k=top_k)
+    return [
+        {
+            "document_title": r.get("title", ""),
+            "section": r.get("category", ""),
+            "content": r.get("excerpt", ""),
+            "entity_links": r.get("related_entities", []),
+            "similarity_score": r.get("similarity_score", 0.0),
+            "client_id": r.get("client_id", "GLOBAL"),
+        }
+        for r in results
+    ]
+
+
+def search_wealth_policy_and_filings(
+    query: str,
+    entity_filter: Optional[str] = None,
+    client_id: Optional[str] = None,
+    top_k: int = 3
+) -> Dict[str, Any]:
+    """Unity Catalog tool mapping for wealth policy vector search."""
+    from src.agent.wealth_vector_store import search_wealth_policy_and_filings as _search
+    return _search(query=query, entity_filter=entity_filter, client_id=client_id, top_k=top_k)
+
+
+
+
+

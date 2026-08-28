@@ -20,6 +20,8 @@ from src.tools.uc_portfolio_tools import (
     find_correlated_exposure,
     analyze_client_tax_and_trust_structure,
     query_fibo_knowledge_graph,
+    search_wealth_documents,
+    execute_dynamic_text_to_cypher,
 )
 
 logger = structlog.get_logger()
@@ -120,6 +122,35 @@ OPENAI_TOOLS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_wealth_documents",
+            "description": "Performs semantic vector search across unstructured wealth management documents including Investment Policy Statements (IPS), SEC Reg BI bulletins, 10-K risk reports, and Delaware trust charters.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "query": {"type": "string", "description": "Semantic search query (e.g. 'Victoria Sterling sector concentration limit' or 'SEC Reg BI care obligation')"},
+                    "client_id": {"type": "string", "description": "Optional client ID filter (e.g. HNW-CLIENT-001)"},
+                },
+                "required": ["query"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "execute_dynamic_text_to_cypher",
+            "description": "Dynamically translates an ad-hoc natural language question into a validated read-only Cypher query and executes it against the Neo4j FIBO graph.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "natural_query": {"type": "string", "description": "Natural language question to translate and execute (e.g. 'Find all clients holding semiconductor stocks')"},
+                },
+                "required": ["natural_query"],
+            },
+        },
+    },
 ]
 
 
@@ -156,6 +187,8 @@ class WealthAgentRAG:
             "find_correlated_exposure": find_correlated_exposure,
             "analyze_client_tax_and_trust_structure": analyze_client_tax_and_trust_structure,
             "query_fibo_knowledge_graph": query_fibo_knowledge_graph,
+            "search_wealth_documents": search_wealth_documents,
+            "execute_dynamic_text_to_cypher": execute_dynamic_text_to_cypher,
         }
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
         self.openai_model = os.getenv("OPENAI_MODEL", "gpt-4o")
@@ -670,6 +703,62 @@ Instructions:
                 reply += f"\n**Tax Efficiency Note**: Delaware statutory trust provides state income tax exemption on undistributed capital gains and multi-generational dynasty wealth preservation."
             else:
                 reply += "No connected irrevocable trusts currently mapped in knowledge graph."
+        elif any(k in query for k in ["doc", "ips", "policy", "sec", "bulletin", "10-k", "10k", "clause", "charter", "statement", "guidance"]):
+            traces.append({
+                "step": step,
+                "type": "PLAN",
+                "action": "Semantic Vector Search Across Wealth Documents",
+                "details": {"query": message, "client_id": client_id, "tool": "search_wealth_documents"}
+            })
+            step += 1
+
+            doc_results = search_wealth_documents(message, client_id)
+            traces.append({
+                "step": step,
+                "type": "TOOL_CALL",
+                "action": f"Executed search_wealth_documents('{message[:30]}...')",
+                "details": {"hits_returned": len(doc_results), "top_doc": doc_results[0]["document_title"] if doc_results else "None"}
+            })
+            step += 1
+
+            reply = f"### Institutional Document & Policy Analysis\n\n"
+            if doc_results:
+                reply += f"Retrieved **{len(doc_results)} relevant document sections** from the Wealth Vector Store:\n\n"
+                for doc in doc_results:
+                    reply += f"#### 📄 {doc['document_title']} ({doc['section']})\n"
+                    reply += f"> *{doc['content'][:300]}...*\n\n"
+                    if doc.get("entity_links"):
+                        reply += f"- **Linked Graph Entities**: `{'`, `'.join(doc['entity_links'])}`\n\n"
+                reply += f"**Fiduciary Summary**: The indexed documents substantiate the regulatory mandate and cross-reference active FIBO graph holdings."
+            else:
+                reply += "No matching clauses found in current indexed wealth documents."
+
+        elif any(k in query for k in ["cypher", "query graph", "match", "find all", "select", "sql"]):
+            traces.append({
+                "step": step,
+                "type": "PLAN",
+                "action": "Dynamic Text-to-Cypher Synthesis",
+                "details": {"natural_query": message, "tool": "execute_dynamic_text_to_cypher"}
+            })
+            step += 1
+
+            cypher_res = execute_dynamic_text_to_cypher(message)
+            traces.append({
+                "step": step,
+                "type": "TOOL_CALL",
+                "action": "Executed Generated Cypher Query",
+                "details": {"cypher": cypher_res.get("generated_cypher", ""), "latency_ms": cypher_res.get("latency_ms", 0)}
+            })
+            step += 1
+
+            reply = f"### Dynamic Text-to-Cypher Execution\n\n"
+            reply += f"```cypher\n{cypher_res.get('generated_cypher', '')}\n```\n\n"
+            reply += f"**Results ({cypher_res.get('row_count', 0)} rows returned in {cypher_res.get('latency_ms', 0)}ms)**:\n\n"
+            if cypher_res.get("rows"):
+                rows = cypher_res["rows"][:5]
+                reply += json.dumps(rows, indent=2)
+            else:
+                reply += "Query executed successfully. 0 records returned."
         else:
             traces.append({
                 "step": step,
