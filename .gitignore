@@ -36,8 +36,10 @@ ENV/
 *.pyo
 *.pyd
 __pycache__/
+**/__pycache__/
 *.pytest_cache/
 .pytest_cache/
+**/.pytest_cache/
 .coverage
 htmlcov/
 *.egg-info/
@@ -46,10 +48,21 @@ build/
 .mypy_cache/
 .ruff_cache/
 
-# MLflow & Local Traces
+# Vector DB & Local Storage (ChromaDB / SQLite)
+backend/data/
+data/
+chroma_wealth_db/
+**/chroma_wealth_db/
+*.sqlite3
+*.db-journal
+
+# MLflow & Local Experiment Traces
 mlruns/
 mlartifacts/
+mlflow.db
 *.log
+logs/
+**/logs/
 
 # Neo4j & Docker Volumes
 neo4j_data/
@@ -82,3 +95,7 @@ lerna-debug.log*
 next-env.d.ts.bak
 *.tsbuildinfo
 
+# AI Agent Sandbox & Temporary Artifacts
+.gemini/
+.system_generated/
+scratch/
