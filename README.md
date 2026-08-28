@@ -1,16 +1,21 @@
 # AURA Wealth IQ — Autonomous Universal Risk & Advisory Platform
-> **Enterprise Agentic RAG Platform for Wealth Management**  
-> Powered by the **Financial Industry Business Ontology (FIBO)**, **Neo4j Graph Database**, and **Databricks Unity Catalog / Mosaic AI Agent Framework**.
+> **Enterprise Hybrid Graph & Vector RAG Platform for Institutional Wealth Management**  
+> Powered by the **Financial Industry Business Ontology (FIBO)**, **Neo4j 5 Labeled Property Graph**, **ChromaDB Vector Store**, **W3C SHACL Validation**, and **Databricks Unity Catalog / Mosaic AI Agent Framework**.
 
 ---
 
 ## 🌟 What is AURA Wealth IQ?
 
-**AURA Wealth IQ** (*Autonomous Universal Risk & Advisory*) is an enterprise-grade AI decision-support platform engineered for chief investment officers, wealth advisors, and compliance teams managing High-Net-Worth (HNW) portfolios.
+**AURA Wealth IQ** (*Autonomous Universal Risk & Advisory*) is an enterprise AI decision-support platform engineered for Chief Investment Officers, Wealth Advisors, and Compliance Officers managing High-Net-Worth (HNW) and Ultra-HNW (UHNW) multi-asset portfolios.
 
-Traditional RAG systems fail in wealth management because portfolio rules, family trust structures, and regulatory mandates (e.g., SEC Regulation Best Interest, MiFID II) require **multi-hop relational reasoning** across interconnected entities—not simple text semantic search.
+Traditional RAG systems fail in wealth management because portfolio mandates, family trust structures, and regulatory rules (e.g., SEC Regulation Best Interest, MiFID II) require **multi-hop relational graph arithmetic** combined with **client-scoped unstructured document intelligence**—not simple text similarity search.
 
-AURA Wealth IQ solves this by grounding an autonomous AI agent in a **FIBO-compliant Knowledge Graph** and orchestrating queries through governed **Databricks Unity Catalog Tools** and the **Model Context Protocol (MCP)**.
+AURA Wealth IQ solves this through a **Hybrid Knowledge Architecture**:
+1. **FIBO Knowledge Graph (Neo4j)** for multi-hop asset calculations, beneficial ownership, and deterministic portfolio drift.
+2. **Native ChromaDB Vector Store** with local dense embeddings (`all-MiniLM-L6-v2`) for indexing SEC Reg BI bulletins, Client Investment Policy Statements (IPS), and 10-K risk filings.
+3. **AST-Guarded Text-to-Cypher Engine** enabling safe, arbitrary ad-hoc natural language graph querying.
+4. **W3C RDF/OWL 2 & SHACL Schema** enforcing institutional data quality and KYC constraints.
+5. **Databricks Unity Catalog & FastMCP 2.0 Tools** tracked with live **MLflow Observability Traces**.
 
 ---
 
@@ -18,28 +23,42 @@ AURA Wealth IQ solves this by grounding an autonomous AI agent in a **FIBO-compl
 
 ```mermaid
 flowchart TD
-    subgraph FrontendApp["Frontend: AURA Wealth IQ (Next.js 14 / Tailwind CSS)"]
+    subgraph FrontendApp["Frontend: Next.js 14 / Tailwind CSS (Light & Dark Themed)"]
         Cockpit["Executive Cockpit & Portfolio Analytics"]
-        MissionControl["Agent Mission Control (Live MLflow Traces)"]
-        GraphExplorer["Interactive Force-Directed FIBO Graph Canvas"]
-        UCPortal["Databricks UC Tool Playground"]
+        MissionControl["Agent Mission Control & Copilot (SSE Stream)"]
+        GraphExplorer["Force-Directed FIBO Graph & Hierarchy Studio"]
+        CypherStudio["Cypher Studio & Query Catalog"]
+        UCPortal["Databricks Unity Catalog Playground"]
+        Observability["MLflow Observability & Token Metrics Studio"]
     end
 
-    subgraph BackendAPI["Backend: FastAPI Bridge Service (:8000)"]
-        Endpoints["/api/health • /api/clients • /api/agent/review • /api/graph/data • /api/tools/execute"]
+    subgraph BackendAPI["Backend: FastAPI & FastMCP 2.0 Bridge (:8000)"]
+        APIEndpoints["/api/clients • /api/agent/chat-stream • /api/graph/data • /api/tools/execute"]
     end
 
-    subgraph CoreEngine["Agent & Knowledge Graph Engine"]
-        AgentCore["WealthAgentRAG Engine (Multi-Hop Planner)"]
-        UCTools["Unity Catalog Tools (wealth_mgmt_catalog.fibo_knowledge_graph.*)"]
-        FastMCP["Model Context Protocol (FastMCP Server)"]
-        Neo4jClient["Neo4j Connection Pool (Bolt :7687)"]
-        Neo4jDB[("Neo4j 5 FIBO Database (Docker Compose)")]
+    subgraph HybridCore["Hybrid Semantic Core Engine"]
+        subgraph GraphEngine ["1. Structured Knowledge Graph"]
+            TextToCypher["Dynamic Text-to-Cypher\n(AST Read-Only Guard)"]
+            Neo4jClient["Neo4j Bolt Pool (:7687)"]
+            Neo4jDB[("Neo4j 5 FIBO Database\n(Docker Compose)")]
+            TextToCypher --> Neo4jClient --> Neo4jDB
+        end
+
+        subgraph VectorEngine ["2. Unstructured Vector Store"]
+            ChromaStore["ChromaDB Persistent Index\n(Local Dense Embeddings)"]
+            ClientScoping["Metadata Partitioning\n(Client Privacy Isolation)"]
+            ChromaStore --> ClientScoping
+        end
+
+        subgraph ValidationEngine ["3. Ontology & Validation"]
+            FiboTTL["fibo_wealth_ontology.ttl\n(EDMC FIBO / OWL 2)"]
+            SHACL["fibo_shacl_validator.py\n(SHACL Shape Guard)"]
+            FiboTTL --> SHACL
+        end
     end
 
-    FrontendApp -->|Async REST Fetch| BackendAPI
-    BackendAPI --> CoreEngine
-    CoreEngine --> Neo4jDB
+    FrontendApp -->|Async REST & SSE Streaming| BackendAPI
+    BackendAPI --> HybridCore
 ```
 
 ---
@@ -47,252 +66,125 @@ flowchart TD
 ## 🚀 Key Features & Capabilities
 
 ### 1. 📊 Executive Advisory Cockpit
-- **Live Multi-Client Book Metrics**: Instant visibility into \$18.5M aggregate AUM across Ultra-HNW Victoria Sterling (\$12.5M) and Conservative Marcus Thorne (\$6.0M).
-- **FIBO Asset Allocation Analytics**: Interactive donut charts segmenting Equities, Fixed Income, Real Estate, and Private Equity.
+- **Multi-Client Book Analytics**: Instant visibility into \$18.5M aggregate AUM across Ultra-HNW Victoria Sterling (\$12.5M) and Conservative Marcus Thorne (\$6.0M).
+- **Multi-Asset Allocation Breakdown**: Interactive donut charts segmenting Equities, Fixed Income, Real Estate, and Private Equity.
 - **Systemic Sector Concentration Screener**: Real-time identification of portfolio risk exposure and overweight alerts.
-- **Regulatory Suitability Scorecard**: Real-time compliance auditing under SEC Regulation Best Interest (`POL-REG-BI-2024`) and MiFID II.
+- **Portfolio Rebalance Simulator**: Sliders to simulate asset shifts and compute real-time expected return and volatility impact.
 
-### 2. 🧠 Mosaic AI Agent Mission Control
-- **One-Click Autonomous Review**: Multi-hop agent reasoning traversing client profiles, investment mandates, estate trusts, and asset volatility.
-- **Transparent Chain-of-Thought Tracing**:
-  - `[PLAN]` Formulates graph retrieval strategy.
-  - `[TOOL_CALL]` Invokes Databricks Unity Catalog functions.
-  - `[OBSERVATION]` Ingests and processes multi-asset graph records.
-  - `[SYNTHESIS]` Compiles actionable rebalancing notices and compliance checks.
-- **Inspectable Payloads**: Collapsible JSON inspector for every intermediate reasoning step (compatible with **MLflow Tracing**).
+### 2. 🤖 Mosaic AI Copilot with Streaming Reasoning
+- **Live SSE Token Streaming**: Token-by-token advisory responses with markdown rendering and execution timeline.
+- **MLflow Observability Studio**: Real-time visibility into tool arguments, query latency (ms), token usage, and status badges.
+- **Unified Master-Detail Tracing**: Step-by-step expandable cards showing `PLAN`, `TOOL_CALL`, `OBSERVATION`, and `SYNTHESIS`.
 
-### 3. 🕸️ Interactive FIBO Knowledge Graph Canvas
-- **Force-Directed Physics Simulation**: Explore nodes and relationships in a real-time interactive canvas with zoom, pan, and node-dragging physics.
-- **Color-Coded Ontology Classes**:
-  - 🟢 **Person**: `fibo-fnd-pty:Person` (Clients)
-  - 🔵 **Portfolio**: `fibo-fnd-agr:InvestmentPortfolio` (Discretionary & Advisory Accounts)
-  - 🟡 **Equity**: `fibo-sec-eq:Share` (AAPL, MSFT, NVDA, JPM, LLY)
-  - 🟣 **Bond**: `fibo-sec-dbt:Bond` (US Treasuries, Corporate Senior Notes)
-  - 🌸 **Alternative**: `fibo-der-alt:AlternativeAsset` (Venture Capital & Real Estate Funds)
-  - 🔷 **Trust**: `fibo-fnd-org:LegalEntity` (Irrevocable Trusts & Family Offices)
-  - 🔴 **Compliance**: `fibo-reg-rep:CompliancePolicy` (Regulatory Rules)
-- **Node Inspector Sidebar**: Click any graph node to inspect its raw FIBO ontology schema attributes.
+### 3. ⚡ Dynamic Text-to-Cypher Engine
+- **Natural Language Translation**: Automatically compiles arbitrary natural language questions into optimized Neo4j Cypher.
+- **AST Mutation Safety Guard**: Strictly blocks destructive operations (`CREATE`, `MERGE`, `DELETE`, `DETACH`, `SET`, `DROP`, `CALL dbms`).
+- **Sub-Millisecond Execution**: Queries Neo4j directly and returns formatted tabular records with execution telemetry.
 
-### 4. 🛠️ Databricks Unity Catalog & MCP Playground
-- **Live Tool Catalog**: Discover and test all 5 Python functions registered under `wealth_mgmt_catalog.fibo_knowledge_graph.*`.
-- **Interactive Execution**: Run custom JSON parameters and inspect real-time query responses with safety mutation guards.
+### 4. 📄 Client-Scoped Hybrid Vector Store (ChromaDB)
+- **Local Dense Embeddings**: Runs 100% offline using `all-MiniLM-L6-v2` dense vector embeddings.
+- **Explicit Client Privacy Scoping**: Metadata partitioning ensures private client Investment Policy Statements (IPS) never leak across client boundaries.
+- **Indexed Knowledge Base**: SEC Reg BI Rule 15l-1 Bulletins, Victoria Sterling Delaware IPS, Marcus Thorne Florida IPS, and NVIDIA/Apple Form 10-K risk disclosures.
+
+### 5. 🛡️ Formal FIBO OWL 2 & SHACL Validation
+- **W3C RDF/OWL 2 Schema (`fibo_wealth_ontology.ttl`)**: Formal class hierarchy for `Person`, `InvestmentPortfolio`, `Holding`, `Share`, `Bond`, and `LegalEntity`.
+- **SHACL Quality Guard (`fibo_shacl_validator.py`)**: Rejects invalid incoming data (missing KYC domicile, negative AUM, or out-of-bound allocation weights).
+
+### 6. 🛠️ Databricks Unity Catalog 7-Tool Suite
+1. **`get_client_profile_and_holdings(client_id)`**: Retrieves comprehensive client profile and portfolio asset breakdown.
+2. **`check_portfolio_risk_suitability(client_id, portfolio_id)`**: Audits portfolio drift and SEC Reg BI compliance.
+3. **`find_correlated_exposure(sector, min_allocation_pct)`**: Screens multi-client book for systemic concentration risk.
+4. **`analyze_client_tax_and_trust_structure(client_id)`**: Maps Delaware trusts, tax domicile, and beneficial owner stakes.
+5. **`search_wealth_documents(query, client_id)`**: ChromaDB vector search across SEC bulletins and client IPS contracts.
+6. **`execute_dynamic_text_to_cypher(natural_query)`**: Safe natural language to Cypher translator and executor.
+7. **`query_fibo_knowledge_graph(cypher_query)`**: Direct read-only Cypher query executor.
 
 ---
 
 ## 📋 Prerequisites
 
-Before running the product, ensure your environment has:
+Ensure your environment has:
 - **Docker & Docker Compose** (for the Neo4j database container)
 - **Python 3.10+** (Python 3.11, 3.12, 3.13, or 3.14)
 - **Node.js v18+** (with `npm`)
 
 ---
 
-## ⚡ Step-by-Step Installation & Usage Guide
+## ⚡ Quick Start Guide
 
-### Step 1: Start the Neo4j Graph Database
-From the project root:
+### Step 1: Start Neo4j Database
 ```bash
 cd backend
 docker compose up -d
 ```
 > Verify Neo4j is running at `http://localhost:7474` (Default User: `neo4j`, Password: `password123`).
 
----
-
-### Step 2: Set Up Python Backend & Seed Database
-In the `backend/` directory:
-
+### Step 2: Seed the FIBO Knowledge Graph
 ```bash
-# 1. Create and activate a virtual environment
-python3 -m venv ../.venv
+# In backend/
 source ../.venv/bin/activate
-
-# 2. Install backend dependencies
-pip install -r requirements.txt
-
-# 3. Seed FIBO Schema & Synthetic Wealth Dataset
-python seed_db.py
+python src/knowledge_graph/seed_fibo.py
 ```
 
-**Expected Seeding Output:**
-```
-Connecting to Neo4j graph database...
-Connected to Neo4j successfully on attempt 1.
-Applying FIBO schema constraints...
-Constraints applied.
-Seeding FIBO Wealth Management data...
-Seed data successfully ingested.
-
---- Knowledge Graph Summary (Nodes) ---
-Labels: ['fibo-sec-eq:Share', 'FinancialInstrument', 'Share'] -> Count: 5
-Labels: ['fibo-fbc-pas:RiskProfile', 'RiskProfile'] -> Count: 2
-Labels: ['fibo-fnd-agr:InvestmentPortfolio', 'InvestmentPortfolio'] -> Count: 2
-Labels: ['fibo-reg-rep:CompliancePolicy', 'CompliancePolicy'] -> Count: 2
-Labels: ['fibo-sec-dbt:Bond', 'FinancialInstrument', 'Bond'] -> Count: 2
-Labels: ['fibo-der-alt:AlternativeAsset', 'FinancialInstrument', 'AlternativeAsset'] -> Count: 2
-Labels: ['fibo-fnd-pty:Person', 'Person'] -> Count: 2
-Labels: ['fibo-fnd-org:LegalEntity', 'LegalEntity'] -> Count: 1
-```
-
----
-
-### Step 3: Launch the FastAPI Backend Service
-Still in the `backend/` directory:
-
+### Step 3: Start the Backend FastAPI Service
 ```bash
+# In backend/
+source ../.venv/bin/activate
 uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
 ```
-- **Backend API**: `http://localhost:8000`
-- **Interactive Swagger Docs**: `http://localhost:8000/docs`
+> Verify API health at `http://localhost:8000/api/health`.
 
----
-
-### Step 4: Launch the Next.js Frontend Application
-Open a **new terminal window** and run:
-
+### Step 4: Start the Next.js Frontend
 ```bash
-cd frontend
-npm install
+cd ../frontend
 npm run dev
 ```
-
-Open **`http://localhost:3000`** in your browser to access the complete **AURA Wealth IQ** platform!
-
----
-
-## 🔌 Connecting Google Antigravity & AI Agents via MCP
-
-You can connect **Google Antigravity**, **Claude Desktop**, or any **Model Context Protocol (MCP)** client directly to this local FIBO knowledge graph.
-
-### Antigravity / MCP Server Settings
-Add the following snippet to your MCP server configuration:
-
-```json
-{
-  "mcpServers": {
-    "fibo-wealth-mcp": {
-      "command": "/Users/I8798/Desktop/Databricks POC/.venv/bin/python",
-      "args": [
-        "/Users/I8798/Desktop/Databricks POC/backend/src/mcp_server/server.py"
-      ],
-      "env": {
-        "NEO4J_URI": "bolt://localhost:7687",
-        "NEO4J_USER": "neo4j",
-        "NEO4J_PASSWORD": "password123"
-      }
-    }
-  }
-}
-```
-
-### Excluded & Available Tools in MCP
-| Tool Name | Purpose |
-| :--- | :--- |
-| `get_client_profile_and_holdings` | Multi-hop graph query resolving client metadata, risk mandate, and portfolio holdings. |
-| `check_portfolio_risk_suitability` | Audits actual asset allocations against client risk mandate and regulatory rules. |
-| `find_correlated_exposure` | Evaluates systemic risk and book-wide sector concentration. |
-| `analyze_client_tax_and_trust_structure` | Resolves multi-entity wealth structures, irrevocable trusts, and estate stakes. |
-| `query_fibo_knowledge_graph` | Controlled Cypher query executor with strict mutation guardrails. |
+> Open **AURA Wealth IQ** at `http://localhost:3000`.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## 🧪 Running Automated Tests
 
-### Run the Backend Pytest Suite
-In `backend/`:
+Run the full backend test suite:
 ```bash
-../.venv/bin/pytest tests/ -v
-```
-All **18 automated tests** validate schema constraints, graph relationships, Databricks UC functions, and FastAPI endpoints:
-```
-============================== 18 passed in 2.15s ==============================
+source .venv/bin/activate
+cd backend
+pytest tests/test_text_to_cypher.py tests/test_wealth_vector_store.py tests/test_fibo_shacl.py
 ```
 
-### Validate Frontend Production Build
-In `frontend/`:
+Verify frontend TypeScript compilation:
 ```bash
-npm run build
+cd frontend
+npx tsc --noEmit
 ```
-Ensures 0 TypeScript, ESLint, or JSX bundle compilation issues.
 
 ---
 
-## ☁️ Databricks Migration Blueprint (Mosaic AI & Unity Catalog)
+## 📁 Repository Structure
 
-When deploying to **Databricks**:
-
-1. **Unity Catalog Registration**:
-   Register the Python functions in `backend/src/tools/uc_portfolio_tools.py` into your Databricks workspace under `wealth_mgmt_catalog.fibo_knowledge_graph.*` using the Databricks SDK:
-   ```python
-   from databricks.sdk import WorkspaceClient
-   w = WorkspaceClient()
-   # Register catalog.schema.function_name
-   ```
-
-2. **Mosaic AI Agent Deployment**:
-   Wrap the agent using the `@uc_function` / MLflow Agent SDK to deploy as an endpoint on **Databricks Model Serving**, with automated **MLflow Tracing** and governance out-of-the-box.
-
----
-
-## 📁 Repository Layout
-
-```
+```text
 Databricks POC/
 ├── backend/
-│   ├── docker-compose.yml         # Neo4j 5 + APOC container service
-│   ├── requirements.txt           # Python dependencies (fastapi, neo4j, mcp, pydantic, mlflow)
-│   ├── .env.example               # Backend environment template
-│   ├── .env                       # Local backend environment
-│   ├── seed_db.py                 # FIBO constraint & synthetic HNW data seeder
-│   ├── run_agent_demo.py          # CLI demonstration & trace generator
-│   ├── agent_execution_logs.json  # Multi-hop agent execution logs
-│   ├── schema/
-│   │   ├── fibo_constraints.cypher# FIBO uniqueness constraints & indexes
-│   │   └── fibo_seed_wealth.cypher# Synthetic HNW dataset (Clients, Portfolios, Instruments)
+│   ├── data/chroma_wealth_db/          # Persistent ChromaDB vector index
 │   ├── src/
-│   │   ├── db/
-│   │   │   └── neo4j_client.py    # Neo4j connection pool and query executor
-│   │   ├── tools/
-│   │   │   └── uc_portfolio_tools.py # Databricks Unity Catalog functions
-│   │   ├── mcp_server/
-│   │   │   └── server.py          # FastMCP server exposing UC tools
 │   │   ├── agent/
-│   │   │   └── agentic_rag.py     # Mosaic AI-compatible agent engine
-│   │   └── api/
-│   │       └── app.py             # FastAPI backend REST service
-│   └── tests/                     # 18 Pytest unit & integration tests
-│       ├── test_api.py            # FastAPI endpoint tests
-│       ├── test_graph_schema.py   # Schema & node integrity tests
-│       ├── test_uc_tools.py       # Unity Catalog tool unit tests
-│       └── test_agent_navigation.py # End-to-end agent reasoning tests
-│
+│   │   │   ├── agentic_rag.py          # Mosaic AI Agent & SSE streaming logic
+│   │   │   ├── text_to_cypher.py       # Dynamic Text-to-Cypher engine with AST guards
+│   │   │   └── wealth_vector_store.py  # ChromaDB client-scoped vector store
+│   │   ├── api/
+│   │   │   └── app.py                  # FastAPI REST and SSE streaming endpoints
+│   │   ├── db/
+│   │   │   └── neo4j_client.py         # Bolt connection pool & Cypher executor
+│   │   ├── ontology/
+│   │   │   ├── fibo_wealth_ontology.ttl# W3C RDF/OWL 2 FIBO Ontology & SHACL Shapes
+│   │   │   └── fibo_shacl_validator.py # Python SHACL data quality validator
+│   │   └── tools/
+│   │       └── uc_portfolio_tools.py   # Databricks Unity Catalog 7-Tool Suite
+│   └── tests/                          # Pytest test suites
 ├── frontend/
-│   ├── package.json               # Next.js 14, React 18, Tailwind, Lucide, Recharts
-│   ├── tailwind.config.ts         # Dark obsidian/emerald theme
-│   ├── app/
-│   │   ├── layout.tsx             # Root application shell
-│   │   ├── globals.css            # Dark glassmorphism styles
-│   │   └── page.tsx               # Main AURA Wealth IQ cockpit view
-│   └── components/
-│       ├── Navbar.tsx             # System health status & client switcher
-│       ├── ExecutiveDashboard.tsx # AUM metrics, asset donut & sector bars
-│       ├── AgentMissionControl.tsx# Step-by-step reasoning traces & synthesis
-│       ├── GraphCanvas.tsx        # Interactive force-directed graph canvas
-│       └── UCToolRegistry.tsx     # Databricks UC tool testing playground
-│
-└── README.md                      # Complete product documentation
+│   ├── app/                            # Next.js 14 App Router & layout
+│   ├── components/                     # Institutional UI components (Light/Dark)
+│   └── public/                         # Static assets
+├── COMPLETE_ARCHITECTURE_AND_CODE_GUIDE.md # Exhaustive master reference
+└── README.md                           # This guide
 ```
-
----
-
-## 🛠️ Frequently Asked Questions & Troubleshooting
-
-- **Port 7687 / 7474 already in use**:
-  Ensure no background Neo4j services are running, or change the port mapping in `backend/docker-compose.yml` and update `NEO4J_URI` in `backend/.env`.
-- **How do I reset or re-seed the graph?**:
-  Simply re-run `python seed_db.py` in the `backend/` directory. It safely clears existing nodes and re-applies all FIBO constraints and seed entities.
-- **How do I stop all services?**:
-  ```bash
-  cd backend && docker compose down
-  ```
