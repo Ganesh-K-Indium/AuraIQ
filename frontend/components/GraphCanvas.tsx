@@ -582,30 +582,30 @@ const getNodeTheme = (label: string, isDark: boolean) => {
   }, [graphData]);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn font-sans">
       {/* Studio Header Toolbar */}
-      <div className="glass-panel p-5 rounded-2xl bg-gradient-to-r from-blue-950/50 via-[#0d1424] to-slate-950 border border-blue-900/40 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-xl">
+      <div className="glass-panel p-5 rounded-2xl bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-white dark:from-blue-950/50 dark:via-[#0d1424] dark:to-slate-950 border border-blue-500/30 dark:border-blue-900/40 flex flex-col md:flex-row md:items-center md:justify-between gap-4 shadow-md">
         <div>
           <div className="flex items-center space-x-2.5">
-            <Network className="w-6 h-6 text-blue-400" />
-            <h2 className="text-xl font-bold text-white tracking-tight">
+            <Network className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight">
               FIBO Graph Intelligence Studio
             </h2>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
             High-resolution entity visualization with structured hierarchy & direct subgraph isolation
           </p>
         </div>
 
         {/* View Mode & Layout Buttons */}
         <div className="flex items-center space-x-2">
-          <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+          <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
             <button
               onClick={() => setViewMode("graph")}
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 viewMode === "graph"
                   ? "bg-blue-600 text-white shadow"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               <Network className="w-3.5 h-3.5" />
@@ -616,7 +616,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
               className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 viewMode === "tree"
                   ? "bg-blue-600 text-white shadow"
-                  : "text-slate-400 hover:text-white"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               }`}
             >
               <TreeDeciduous className="w-3.5 h-3.5" />
@@ -625,11 +625,11 @@ const getNodeTheme = (label: string, isDark: boolean) => {
           </div>
 
           {viewMode === "graph" && (
-            <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <div className="flex bg-slate-100 dark:bg-slate-950 p-1 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
               <button
                 onClick={() => handleSwitchLayout("hierarchy")}
                 className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  layoutMode === "hierarchy" ? "bg-slate-800 text-white font-bold" : "text-slate-400 hover:text-white"
+                  layoutMode === "hierarchy" ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold shadow-sm" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Structured Tree
@@ -637,7 +637,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
               <button
                 onClick={() => handleSwitchLayout("force")}
                 className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  layoutMode === "force" ? "bg-slate-800 text-white font-bold" : "text-slate-400 hover:text-white"
+                  layoutMode === "force" ? "bg-white dark:bg-slate-800 text-slate-900 dark:text-white font-bold shadow-sm" : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 }`}
               >
                 Network
@@ -647,18 +647,18 @@ const getNodeTheme = (label: string, isDark: boolean) => {
 
           <button
             onClick={fetchGraph}
-            className="p-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-slate-300 transition-colors"
-            title="Reload Graph"
+            className="p-2 bg-white dark:bg-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-700 dark:text-slate-300 transition-colors shadow-sm"
+            title="Refresh Knowledge Graph"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           </button>
         </div>
       </div>
 
-      {/* Main Studio View */}
+      {/* Main Studio Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left: Interactive Canvas or Structured Tree */}
-        <div className="lg:col-span-8 glass-panel p-4 rounded-2xl border border-slate-800 relative flex flex-col items-center shadow-2xl">
+        <div className="lg:col-span-8 glass-panel p-4 rounded-2xl border border-slate-200 dark:border-slate-800 relative flex flex-col items-center shadow-md bg-white dark:bg-slate-900/60">
           {viewMode === "graph" ? (
             <>
               {/* Canvas Controls Header */}
@@ -671,7 +671,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                     placeholder="Search node (e.g. AAPL, Victoria)..."
                     value={searchQuery}
                     onChange={(e) => handleSearchNode(e.target.value)}
-                    className="w-full pl-8 pr-3 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-blue-500"
+                    className="w-full pl-8 pr-3 py-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs text-slate-900 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                   />
                 </div>
 
@@ -680,7 +680,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                   <select
                     value={filterType}
                     onChange={(e) => setFilterType(e.target.value)}
-                    className="bg-slate-950 border border-slate-800 text-xs text-slate-300 py-1.5 px-3 rounded-lg focus:outline-none"
+                    className="bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-700 dark:text-slate-300 py-1.5 px-3 rounded-lg focus:outline-none cursor-pointer"
                   >
                     <option value="ALL">All FIBO Layers</option>
                     <option value="Person">Clients (Person)</option>
@@ -692,24 +692,24 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                     <option value="CompliancePolicy">Compliance Rules</option>
                   </select>
 
-                  <div className="flex items-center space-x-1 bg-slate-950 p-1 rounded-lg border border-slate-800">
+                  <div className="flex items-center space-x-1 bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
                     <button
                       onClick={() => zoom(1.2)}
-                      className="p-1 hover:bg-slate-800 rounded text-slate-300"
+                      className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-600 dark:text-slate-300"
                       title="Zoom In"
                     >
                       <ZoomIn className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={() => zoom(0.8)}
-                      className="p-1 hover:bg-slate-800 rounded text-slate-300"
+                      className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-600 dark:text-slate-300"
                       title="Zoom Out"
                     >
                       <ZoomOut className="w-3.5 h-3.5" />
                     </button>
                     <button
                       onClick={resetZoom}
-                      className="p-1 hover:bg-slate-800 rounded text-slate-300"
+                      className="p-1 hover:bg-slate-200 dark:hover:bg-slate-800 rounded text-slate-600 dark:text-slate-300"
                       title="Reset View"
                     >
                       <Maximize2 className="w-3.5 h-3.5" />
@@ -725,21 +725,21 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
-                  className="w-full h-full bg-[#060911] rounded-xl cursor-grab active:cursor-grabbing border border-slate-800 shadow-inner"
+                  className="w-full h-full rounded-xl cursor-grab active:cursor-grabbing border border-slate-200 dark:border-slate-800 shadow-inner"
                 />
               </div>
 
               {/* Bottom Interactive Legend */}
-              <div className="w-full mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400 border-t border-slate-800/80 pt-3">
+              <div className="w-full mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800/80 pt-3">
                 <div className="flex flex-wrap items-center gap-3 font-semibold">
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#10b981]" /><span>Client</span></span>
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-[0_0_8px_#3b82f6]" /><span>Portfolio</span></span>
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#f59e0b]" /><span>Equity</span></span>
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-400 shadow-[0_0_8px_#8b5cf6]" /><span>Bond</span></span>
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-pink-400 shadow-[0_0_8px_#ec4899]" /><span>Alternative</span></span>
-                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#06b6d4]" /><span>Trust</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm" /><span>Client</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm" /><span>Portfolio</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-sm" /><span>Equity</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-sm" /><span>Bond</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-pink-500 shadow-sm" /><span>Alternative</span></span>
+                  <span className="flex items-center space-x-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-500 shadow-sm" /><span>Trust</span></span>
                 </div>
-                <span className="text-[11px] text-blue-400 font-bold">
+                <span className="text-[11px] text-blue-600 dark:text-blue-400 font-bold">
                   Click any card to isolate & trace its subgraph
                 </span>
               </div>
@@ -749,7 +749,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
             <div className="w-full space-y-6 p-2 max-h-[620px] overflow-y-auto pr-2">
               {/* Level 1: Clients & Estate Entities */}
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2 flex items-center space-x-1.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mb-2 flex items-center space-x-1.5 font-mono">
                   <Building2 className="w-4 h-4" />
                   <span>Level 1: High-Net-Worth Clients & Estate Trusts</span>
                 </div>
@@ -760,17 +760,17 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       onClick={() => setSelectedNode(c)}
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
                         selectedNode?.id === c.id
-                          ? "bg-emerald-500/15 border-emerald-400 shadow-lg shadow-emerald-500/10"
-                          : "bg-slate-950 border-slate-800 hover:border-slate-700"
+                          ? "bg-emerald-50 dark:bg-emerald-500/15 border-emerald-500 shadow-md"
+                          : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-white">{c.name}</span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white">{c.name}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30">
                           {c.properties?.net_worth_tier}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-1">Tax Nexus: {c.properties?.tax_residence}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Tax Nexus: {c.properties?.tax_residence}</div>
                     </div>
                   ))}
                   {hierarchyGroups?.trusts.map((t) => (
@@ -779,17 +779,17 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       onClick={() => setSelectedNode(t)}
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
                         selectedNode?.id === t.id
-                          ? "bg-cyan-500/15 border-cyan-400 shadow-lg shadow-cyan-500/10"
-                          : "bg-slate-950 border-slate-800 hover:border-slate-700"
+                          ? "bg-cyan-50 dark:bg-cyan-500/15 border-cyan-500 shadow-md"
+                          : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-white">{t.name}</span>
-                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/20 text-cyan-400">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white">{t.name}</span>
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-700 dark:text-cyan-400 border border-cyan-500/30">
                           {t.properties?.entity_type}
                         </span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-1">Jurisdiction: {t.properties?.jurisdiction}</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Jurisdiction: {t.properties?.jurisdiction}</div>
                     </div>
                   ))}
                 </div>
@@ -797,7 +797,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
 
               {/* Level 2: Portfolios & Governance */}
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2 flex items-center space-x-1.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-2 flex items-center space-x-1.5 font-mono">
                   <Wallet className="w-4 h-4" />
                   <span>Level 2: Investment Portfolios & Mandates</span>
                 </div>
@@ -808,17 +808,17 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       onClick={() => setSelectedNode(p)}
                       className={`p-4 rounded-xl border transition-all cursor-pointer ${
                         selectedNode?.id === p.id
-                          ? "bg-blue-500/15 border-blue-400 shadow-lg shadow-blue-500/10"
-                          : "bg-slate-950 border-slate-800 hover:border-slate-700"
+                          ? "bg-blue-50 dark:bg-blue-500/15 border-blue-500 shadow-md"
+                          : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
                       }`}
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-sm text-white">{p.name}</span>
-                        <span className="font-mono font-bold text-emerald-400">
+                        <span className="font-bold text-sm text-slate-900 dark:text-white">{p.name}</span>
+                        <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
                           ${(p.properties?.total_aum / 1_000_000).toFixed(1)}M AUM
                         </span>
                       </div>
-                      <div className="text-xs text-slate-400 mt-1">Type: {p.properties?.portfolio_type} Discretionary</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">Type: {p.properties?.portfolio_type} Discretionary</div>
                     </div>
                   ))}
                 </div>
@@ -826,7 +826,7 @@ const getNodeTheme = (label: string, isDark: boolean) => {
 
               {/* Level 3: Underlying Financial Instruments */}
               <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2 flex items-center space-x-1.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2 flex items-center space-x-1.5 font-mono">
                   <TrendingUp className="w-4 h-4" />
                   <span>Level 3: Underlying FIBO Financial Instruments</span>
                 </div>
@@ -837,14 +837,14 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       onClick={() => setSelectedNode(inst)}
                       className={`p-3 rounded-lg border transition-all cursor-pointer ${
                         selectedNode?.id === inst.id
-                          ? "bg-amber-500/15 border-amber-400 shadow"
-                          : "bg-slate-950 border-slate-800/80 hover:border-slate-700"
+                          ? "bg-amber-50 dark:bg-amber-500/15 border-amber-500 shadow-md"
+                          : "bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 shadow-sm"
                       }`}
                     >
-                      <div className="font-bold text-xs text-white truncate">{inst.name}</div>
-                      <div className="flex items-center justify-between mt-1 text-[10px] text-slate-400 font-mono">
+                      <div className="font-bold text-xs text-slate-900 dark:text-white truncate">{inst.name}</div>
+                      <div className="flex items-center justify-between mt-1 text-[10px] text-slate-500 dark:text-slate-400 font-mono">
                         <span>{inst.properties?.ticker || inst.properties?.fund_id || "BOND"}</span>
-                        <span className="text-emerald-400 font-semibold">{inst.label}</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{inst.label}</span>
                       </div>
                     </div>
                   ))}
@@ -856,18 +856,18 @@ const getNodeTheme = (label: string, isDark: boolean) => {
 
         {/* Right: Rich Node Inspector Drawer */}
         <div className="lg:col-span-4 space-y-4">
-          <div className="glass-panel p-5 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <div className="flex items-center space-x-2 text-slate-200 font-bold text-sm">
-                <Compass className="w-4 h-4 text-blue-400" />
+          <div className="glass-panel p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4 shadow-md bg-white dark:bg-slate-900/60">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <div className="flex items-center space-x-2 text-slate-900 dark:text-slate-200 font-bold text-sm">
+                <Compass className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                 <span>FIBO Entity Inspector</span>
               </div>
               {selectedNode && (
                 <button
                   onClick={copyNodeCypher}
-                  className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-[10px] font-mono text-slate-300 transition-colors"
+                  className="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-mono text-slate-700 dark:text-slate-300 transition-colors"
                 >
-                  {copiedCypher ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  {copiedCypher ? <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedCypher ? "Copied" : "Copy Cypher"}</span>
                 </button>
               )}
@@ -876,9 +876,9 @@ const getNodeTheme = (label: string, isDark: boolean) => {
             {selectedNode ? (
               <div className="space-y-4">
                 {/* Node Main Details Card */}
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       FIBO Ontology Type
                     </span>
                     <span
@@ -888,15 +888,15 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       {selectedNode.label}
                     </span>
                   </div>
-                  <div className="text-base font-bold text-white tracking-tight">{selectedNode.name}</div>
-                  <div className="text-[11px] font-mono text-slate-400">Graph Node ID: #{selectedNode.id}</div>
+                  <div className="text-base font-bold text-slate-900 dark:text-white tracking-tight">{selectedNode.name}</div>
+                  <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">Graph Node ID: #{selectedNode.id}</div>
                 </div>
 
                 {/* Direct Connected Relationships */}
                 <div>
-                  <div className="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
+                  <div className="text-xs font-bold text-slate-800 dark:text-slate-300 mb-2 flex items-center justify-between">
                     <span>Connected Subgraph Links</span>
-                    <span className="font-mono text-[10px] text-blue-400 font-bold">
+                    <span className="font-mono text-[10px] text-blue-600 dark:text-blue-400 font-bold">
                       {connectedRelationships.length} Connections
                     </span>
                   </div>
@@ -905,12 +905,12 @@ const getNodeTheme = (label: string, isDark: boolean) => {
                       <div
                         key={idx}
                         onClick={() => rel.targetNode && setSelectedNode(rel.targetNode)}
-                        className="p-2 rounded-lg bg-slate-900/90 hover:bg-slate-800 border border-slate-800 flex items-center justify-between text-xs cursor-pointer transition-colors"
+                        className="p-2 rounded-lg bg-slate-50 dark:bg-slate-900/90 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs cursor-pointer transition-colors"
                       >
                         <div className="flex items-center space-x-2">
-                          <span className="font-mono text-[10px] text-blue-300 font-bold">[:{rel.type}]</span>
-                          <ArrowRight className="w-3 h-3 text-slate-500" />
-                          <span className="font-semibold text-slate-200 truncate max-w-[120px]">
+                          <span className="font-mono text-[10px] text-blue-600 dark:text-blue-300 font-bold">[:{rel.type}]</span>
+                          <ArrowRight className="w-3 h-3 text-slate-400" />
+                          <span className="font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[120px]">
                             {rel.targetNode?.name || "Target"}
                           </span>
                         </div>
@@ -925,10 +925,10 @@ const getNodeTheme = (label: string, isDark: boolean) => {
 
                 {/* Node Raw Properties */}
                 <div>
-                  <span className="text-xs font-bold text-slate-300 block mb-1.5">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-300 block mb-1.5">
                     FIBO Schema Properties
                   </span>
-                  <pre className="p-3 bg-slate-950 rounded-xl text-[11px] font-mono text-emerald-300 overflow-x-auto border border-slate-800 max-h-48">
+                  <pre className="p-3 bg-slate-900 dark:bg-slate-950 rounded-xl text-[11px] font-mono text-emerald-400 overflow-x-auto border border-slate-800 max-h-48">
                     {JSON.stringify(selectedNode.properties, null, 2)}
                   </pre>
                 </div>
