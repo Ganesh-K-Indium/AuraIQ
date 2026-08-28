@@ -2,7 +2,7 @@
 AURA Wealth IQ - Enterprise Hybrid ChromaDB Vector Store
 Indexes SEC Reg BI bulletins, Client Investment Policy Statements (IPS),
 Delaware Trust legal agreements, and 10-K risk disclosures with metadata cross-linked to FIBO Knowledge Graph entities.
-Powered by native ChromaDB with local dense embedding generator.
+Powered by native ChromaDB with local all-MiniLM-L6-v2 ONNX dense embeddings.
 """
 
 import os
@@ -10,11 +10,12 @@ import re
 import math
 import time
 import logging
+from pathlib import Path
 from typing import List, Dict, Any, Optional
 
 import chromadb
-from chromadb import EmbeddingFunction, Documents, Embeddings
 from chromadb.config import Settings
+from chromadb.utils.embedding_functions import ONNXMiniLM_L6_V2
 
 logger = logging.getLogger("WealthVectorStore")
 
@@ -112,74 +113,62 @@ WEALTH_DOCUMENTS = [
 ]
 
 
-class LocalDenseEmbeddingFunction(EmbeddingFunction[Documents]):
+class LocalMiniLMEmbeddingFunction(ONNXMiniLM_L6_V2):
     """
-    Offline deterministic dense embedding generator (384 dimensions)
-    conforming to ChromaDB EmbeddingFunction protocol.
+    Local all-MiniLM-L6-v2 ONNX dense embedding generator (384 dimensions)
+    stored locally in workspace and executed via ONNX Runtime without PyTorch overhead.
     """
-
-    def __init__(self, dim: int = 384):
-        self.dim = dim
-
-    def __call__(self, input: Documents) -> Embeddings:
-        embeddings = []
-        for text in input:
-            tokens = re.findall(r"\b\w+\b", text.lower())
-            vec = [0.0] * self.dim
-            for idx, token in enumerate(tokens):
-                h = hash(token)
-                dim_idx = abs(h) % self.dim
-                sign = 1.0 if (h % 2 == 0) else -1.0
-                vec[dim_idx] += sign * (1.0 / (idx + 1.0) ** 0.5)
-
-            norm = math.sqrt(sum(x * x for x in vec)) or 1.0
-            embeddings.append([round(x / norm, 6) for x in vec])
-        return embeddings
-
-    @staticmethod
-    def name() -> str:
-        return "local_dense_embedding"
+    DOWNLOAD_PATH = (Path(__file__).parent.parent.parent / "data" / "models" / "all-MiniLM-L6-v2").resolve()
 
 
 class ChromaWealthVectorStore:
     """
     ChromaDB-backed vector database storing wealth management policies,
-    client Investment Policy Statements (IPS), and 10-K filings with explicit client-scoping.
+    client Investment Policy Statements (IPS), and 10-K filings using all-MiniLM-L6-v2 embeddings.
     """
 
     def __init__(self, persist_dir: str = "./data/chroma_wealth_db"):
         self.persist_dir = persist_dir
-        self.embedding_fn = LocalDenseEmbeddingFunction(dim=384)
         self.collection = None
         self.is_chroma_ready = False
         self._init_chroma()
 
     def _init_chroma(self):
-        """Initializes persistent Chroma collection and seeds initial documents."""
+        """Initializes persistent Chroma collection with all-MiniLM-L6-v2 embeddings."""
         try:
             os.makedirs(self.persist_dir, exist_ok=True)
+            self.embedding_fn = LocalMiniLMEmbeddingFunction()
+
             self.client = chromadb.PersistentClient(
                 path=self.persist_dir,
                 settings=Settings(anonymized_telemetry=False)
             )
-            # Recreate collection to ensure client_id metadata is refreshed
+
+            # Ensure clean collection with updated embedding dimension
             try:
-                self.client.delete_collection("fibo_wealth_knowledge_base")
+                self.collection = self.client.get_or_create_collection(
+                    name="fibo_wealth_knowledge_base",
+                    embedding_function=self.embedding_fn,
+                    metadata={"hnsw:space": "cosine"}
+                )
             except Exception:
-                pass
+                self.client.delete_collection("fibo_wealth_knowledge_base")
+                self.collection = self.client.get_or_create_collection(
+                    name="fibo_wealth_knowledge_base",
+                    embedding_function=self.embedding_fn,
+                    metadata={"hnsw:space": "cosine"}
+                )
 
-            self.collection = self.client.get_or_create_collection(
-                name="fibo_wealth_knowledge_base",
-                embedding_function=self.embedding_fn,
-                metadata={"hnsw:space": "cosine"}
-            )
+            # Seed documents if empty
+            if self.collection.count() == 0:
+                self._seed_documents()
 
-            self._seed_documents()
             self.is_chroma_ready = True
-            logger.info("chromadb_initialized", collection="fibo_wealth_knowledge_base", count=self.collection.count())
+            logger.info("chromadb_initialized", model="all-MiniLM-L6-v2", count=self.collection.count())
         except Exception as e:
-            logger.warning(f"ChromaDB initialization encountered issue ({e}), running fallback if needed.")
+            logger.warning(f"ChromaDB persistent initialization fallback: {e}")
             try:
+                self.embedding_fn = LocalMiniLMEmbeddingFunction()
                 self.client = chromadb.EphemeralClient()
                 self.collection = self.client.get_or_create_collection(
                     name="fibo_wealth_knowledge_base",
@@ -189,11 +178,11 @@ class ChromaWealthVectorStore:
                 self._seed_documents()
                 self.is_chroma_ready = True
             except Exception as eph_err:
-                logger.error(f"Ephemeral ChromaDB failed: {eph_err}")
+                logger.error(f"Ephemeral ChromaDB initialization failed: {eph_err}")
                 self.is_chroma_ready = False
 
     def _seed_documents(self):
-        """Seeds canonical institutional wealth documents into ChromaDB with explicit client_id."""
+        """Seeds canonical institutional wealth documents into ChromaDB with all-MiniLM-L6-v2 embeddings."""
         ids = [doc["doc_id"] for doc in WEALTH_DOCUMENTS]
         documents = [f"{doc['title']}\n\n{doc['content']}" for doc in WEALTH_DOCUMENTS]
         metadatas = [
@@ -201,7 +190,7 @@ class ChromaWealthVectorStore:
                 "doc_id": doc["doc_id"],
                 "title": doc["title"],
                 "category": doc["category"],
-                "client_id": doc["client_id"],  # Explicit client scoping (e.g. HNW-CLIENT-001, HNW-CLIENT-002, or GLOBAL)
+                "client_id": doc["client_id"],
                 "jurisdiction": doc["jurisdiction"],
                 "related_entities": doc["related_entities"],
                 "related_sectors": doc["related_sectors"],
@@ -223,8 +212,8 @@ class ChromaWealthVectorStore:
         top_k: int = 3
     ) -> List[Dict[str, Any]]:
         """
-        Performs semantic similarity search with metadata cross-filtering and client privacy scoping.
-        If client_id is passed, only returns documents matching that client or GLOBAL documents.
+        Performs dense semantic similarity search with all-MiniLM-L6-v2 embeddings
+        and explicit client privacy scoping.
         """
         active_filter = client_id or entity_filter
 
@@ -247,18 +236,16 @@ class ChromaWealthVectorStore:
                     similarity = round(max(0.0, 1.0 - (distance / 2.0)), 4)
                     doc_client = metadata.get("client_id", "GLOBAL")
 
-                    # Client Isolation Filter: Only return document if it matches active client or is GLOBAL
+                    # Client Isolation Filter
                     if active_filter:
                         filter_lower = active_filter.lower()
                         entities = metadata.get("related_entities", "").lower()
                         jurisdiction = metadata.get("jurisdiction", "").lower()
 
-                        # If filter matches a client ID, ensure no other client's private IPS leaks
                         if "hnw-client-" in filter_lower:
                             if doc_client != "GLOBAL" and doc_client.lower() != filter_lower:
                                 continue
                         else:
-                            # General entity / sector filter
                             if filter_lower not in entities and filter_lower not in jurisdiction and filter_lower not in doc_client.lower():
                                 continue
 
@@ -275,7 +262,7 @@ class ChromaWealthVectorStore:
 
             return formatted[:top_k]
         except Exception as e:
-            logger.error(f"ChromaDB search failed: {e}")
+            logger.error(f"ChromaDB all-MiniLM-L6-v2 search failed: {e}")
             return self._fallback_search(query, active_filter, top_k)
 
     def _fallback_search(
@@ -284,7 +271,7 @@ class ChromaWealthVectorStore:
         active_filter: Optional[str] = None,
         top_k: int = 3
     ) -> List[Dict[str, Any]]:
-        """Heuristic fallback search with client isolation."""
+        """Heuristic fallback search."""
         query_lower = query.lower()
         matches = []
         for doc in WEALTH_DOCUMENTS:
@@ -335,16 +322,13 @@ def search_wealth_policy_and_filings(
 ) -> Dict[str, Any]:
     """
     Searches unstructured SEC Reg BI regulatory bulletins, client Investment Policy Statements (IPS),
-    and 10-K risk disclosures using ChromaDB dense embeddings with metadata cross-linked to FIBO entities
-    and strict client-privacy scoping.
-
-    Unity Catalog Mapping: wealth_mgmt_catalog.fibo_knowledge_graph.search_wealth_policy_and_filings
+    and 10-K risk disclosures using ChromaDB with all-MiniLM-L6-v2 dense embeddings.
     """
     t0 = time.time()
     results = wealth_vector_store.search(query, entity_filter=entity_filter, client_id=client_id, top_k=top_k)
     return {
         "status": "SUCCESS",
-        "engine": "ChromaDB_Local_Dense_Embeddings",
+        "engine": "ChromaDB_all-MiniLM-L6-v2",
         "query": query,
         "client_scope": client_id or entity_filter or "GLOBAL",
         "match_count": len(results),
