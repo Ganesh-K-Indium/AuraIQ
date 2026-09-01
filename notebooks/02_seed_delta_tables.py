@@ -37,9 +37,9 @@
 # MAGIC COMMENT 'FIBO Person & Wealth Client Master Dimension';
 # MAGIC 
 # MAGIC INSERT INTO dim_clients VALUES
-# MAGIC   ('HNW-CLIENT-001', 'Victoria Sterling', 'Ultra-HNW ($25M+)', 'Delaware', 'VERIFIED_TIER_1', true, current_timestamp()),
-# MAGIC   ('HNW-CLIENT-002', 'Marcus Thorne', 'High-Net-Worth ($5M-$10M)', 'Florida', 'VERIFIED_TIER_1', true, current_timestamp()),
-# MAGIC   ('HNW-CLIENT-003', 'Elena Rostova', 'Ultra-HNW ($50M+)', 'New York', 'VERIFIED_TIER_1', true, current_timestamp());
+# MAGIC   ('HNW-CLIENT-001', 'Victoria Sterling', 'Ultra-HNW (25M+ USD)', 'Delaware', 'VERIFIED_TIER_1', true, current_timestamp()),
+# MAGIC   ('HNW-CLIENT-002', 'Marcus Thorne', 'High-Net-Worth (5M-10M USD)', 'Florida', 'VERIFIED_TIER_1', true, current_timestamp()),
+# MAGIC   ('HNW-CLIENT-003', 'Elena Rostova', 'Ultra-HNW (50M+ USD)', 'New York', 'VERIFIED_TIER_1', true, current_timestamp());
 # MAGIC 
 # MAGIC SELECT * FROM dim_clients;
 
@@ -77,7 +77,7 @@
 # MAGIC   client_id STRING NOT NULL,
 # MAGIC   portfolio_name STRING NOT NULL,
 # MAGIC   mandate_type STRING COMMENT 'Moderate Growth, Capital Preservation, Aggressive Growth',
-# MAGIC   total_aum DOUBLE COMMENT 'Current Total Assets Under Management ($USD)',
+# MAGIC   total_aum DOUBLE COMMENT 'Current Total Assets Under Management in USD',
 # MAGIC   target_equity_pct DOUBLE COMMENT 'Target Equity Allocation Weight',
 # MAGIC   target_fixed_income_pct DOUBLE COMMENT 'Target Fixed Income Allocation Weight',
 # MAGIC   target_alts_pct DOUBLE COMMENT 'Target Alternative Asset Weight',
@@ -138,21 +138,21 @@
 # MAGIC   asset_class STRING,
 # MAGIC   sector STRING,
 # MAGIC   allocation_pct DOUBLE COMMENT 'Weight as decimal (0.0 to 1.0)',
-# MAGIC   current_value_usd DOUBLE COMMENT 'Holding market valuation in $USD',
+# MAGIC   current_value_usd DOUBLE COMMENT 'Holding market valuation in USD',
 # MAGIC   cost_basis_usd DOUBLE,
 # MAGIC   as_of_date DATE
 # MAGIC )
 # MAGIC COMMENT 'FIBO Fact Holdings Snapshot Table';
 # MAGIC 
 # MAGIC INSERT INTO fact_holdings VALUES
-# MAGIC   -- Victoria Sterling Portfolio ($12.5M Total - Overweight Tech at 51.2%)
+# MAGIC   -- Victoria Sterling Portfolio (12.5M USD Total - Overweight Tech at 51.2%)
 # MAGIC   ('HLD-VS-001', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-NVDA', 'NVDA', 'NVIDIA Corporation', 'Equities', 'Technology', 0.2800, 3500000.0, 1800000.0, current_date()),
 # MAGIC   ('HLD-VS-002', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-AAPL', 'AAPL', 'Apple Inc.', 'Equities', 'Technology', 0.2320, 2900000.0, 1950000.0, current_date()),
 # MAGIC   ('HLD-VS-003', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-LLY',  'LLY',  'Eli Lilly and Company', 'Equities', 'Healthcare', 0.1280, 1600000.0, 1100000.0, current_date()),
 # MAGIC   ('HLD-VS-004', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'BD-UST-5Y', 'UST-5Y', 'US Treasury 5-Year Benchmark Note', 'Fixed Income', 'Government', 0.2400, 3000000.0, 3000000.0, current_date()),
 # MAGIC   ('HLD-VS-005', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'ALT-PE-01', 'VC-FUND-I', 'Apex Global Venture Capital Fund IV', 'Alternatives', 'Private Equity', 0.1200, 1500000.0, 1500000.0, current_date()),
 # MAGIC 
-# MAGIC   -- Marcus Thorne Portfolio ($6.0M Total - Conservative Mandate 70% Fixed Income)
+# MAGIC   -- Marcus Thorne Portfolio (6.0M USD Total - Conservative Mandate 70% Fixed Income)
 # MAGIC   ('HLD-MT-001', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'BD-UST-5Y', 'UST-5Y', 'US Treasury 5-Year Benchmark Note', 'Fixed Income', 'Government', 0.4500, 2700000.0, 2700000.0, current_date()),
 # MAGIC   ('HLD-MT-002', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'BD-CORP-A', 'APPL-BOND', 'Apple Inc. Senior Notes 2028', 'Fixed Income', 'Technology', 0.2500, 1500000.0, 1500000.0, current_date()),
 # MAGIC   ('HLD-MT-003', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'EQ-JPM',  'JPM',  'JPMorgan Chase & Co.', 'Equities', 'Financials', 0.2000, 1200000.0, 950000.0, current_date()),
@@ -207,4 +207,3 @@ except Exception as e:
 # MAGIC JOIN dim_portfolios p ON c.client_id = p.client_id
 # MAGIC JOIN fact_holdings h ON p.portfolio_id = h.portfolio_id
 # MAGIC GROUP BY c.client_id, c.name, c.tax_residence, p.portfolio_name, p.mandate_type, p.total_aum, p.max_sector_cap_pct;
-
