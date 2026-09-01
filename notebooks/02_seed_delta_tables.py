@@ -182,6 +182,7 @@ try:
     print("✅ Neo4j Knowledge Graph seeded successfully!")
 except Exception as e:
     print(f"ℹ️ Neo4j Seeding Notice (if running isolated from Neo4j): {e}")
+    print(f"ℹ️ Neo4j Seeding Notice: {e}")
     print("Delta Lake Tables in Unity Catalog are fully seeded and ready!")
 
 # COMMAND ----------

@@ -4,6 +4,7 @@ Handles connection pooling, query execution, and schema seeding.
 """
 
 import os
+import logging
 from typing import Any, Dict, List, Optional
 from neo4j import GraphDatabase, Driver, Session
 import structlog
@@ -12,6 +13,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = structlog.get_logger()
+try:
+    import structlog
+    logger = structlog.get_logger()
+except ImportError:
+    logger = logging.getLogger("neo4j_client")
 
 
 class Neo4jClient:

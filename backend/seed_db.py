@@ -5,6 +5,14 @@ Seed database with FIBO schema constraints and dummy wealth management data.
 import sys
 import time
 import structlog
+import logging
+
+try:
+    import structlog
+    logger = structlog.get_logger()
+except ImportError:
+    logger = logging.getLogger("seed_db")
+
 from src.db.neo4j_client import neo4j_client
 
 logger = structlog.get_logger()
