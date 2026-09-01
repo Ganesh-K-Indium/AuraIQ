@@ -3,8 +3,10 @@
 # MAGIC # 🏛️ AURA Wealth IQ: Mosaic AI Agent Deployment Notebook
 # MAGIC > **Enterprise Production Deployment Pipeline for Institutional Wealth Management**
 # MAGIC > 
+# MAGIC > Target Unity Catalog: **`db_ai_strike_team.fibo_knowledge_graph`**
+# MAGIC > 
 # MAGIC > This notebook executes the end-to-end deployment of the AURA Wealth Agent on Databricks:
-# MAGIC > 1. Sets up Unity Catalog (`wealth_mgmt_catalog.fibo_knowledge_graph`) with fallback handling
+# MAGIC > 1. Sets up Schema in team catalog (`db_ai_strike_team.fibo_knowledge_graph`)
 # MAGIC > 2. Installs required Python dependencies
 # MAGIC > 3. Configures backend Python paths & verifies Unity Catalog Tools
 # MAGIC > 4. Tests local Agent reasoning with MLflow Tracing
@@ -13,13 +15,11 @@
 
 # COMMAND ----------
 # MAGIC %md
-# MAGIC ### Step 1: Create Unity Catalog Catalog & Schema
+# MAGIC ### Step 1: Create Schema in Team Catalog (`db_ai_strike_team`)
 
 # COMMAND ----------
 # MAGIC %sql
-# MAGIC -- Attempt creating dedicated catalog, fallback to current catalog if permissions are restricted
-# MAGIC CREATE CATALOG IF NOT EXISTS wealth_mgmt_catalog;
-# MAGIC USE CATALOG wealth_mgmt_catalog;
+# MAGIC USE CATALOG db_ai_strike_team;
 # MAGIC 
 # MAGIC CREATE SCHEMA IF NOT EXISTS fibo_knowledge_graph;
 # MAGIC USE SCHEMA fibo_knowledge_graph;
@@ -106,6 +106,25 @@ from src.agent.mlflow_model import AuraWealthAgentModel
 from mlflow.models.signature import ModelSignature
 from mlflow.types.schema import Schema, ColSpec
 
+conda_env = {
+    "channels": ["defaults", "conda-forge"],
+    "dependencies": [
+        "python=3.10.12",
+        "pip",
+        {
+            "pip": [
+                "mlflow>=3.0.0",
+                "chromadb>=0.5.0",
+                "neo4j>=5.18.0",
+                "openai>=1.20.0",
+                "pydantic>=2.6.0",
+                "structlog>=24.1.0",
+                "databricks-sdk>=0.20.0",
+            ]
+        }
+    ]
+}
+
 # Define clean I/O signature for Model Serving
 input_schema = Schema([
     ColSpec("string", "client_id"),
@@ -117,13 +136,13 @@ output_schema = Schema([
 ])
 signature = ModelSignature(inputs=input_schema, outputs=output_schema)
 
-registered_model_name = "wealth_mgmt_catalog.fibo_knowledge_graph.aura_wealth_agent"
+registered_model_name = "db_ai_strike_team.fibo_knowledge_graph.aura_wealth_agent"
 
 with mlflow.start_run(run_name="AURA_Wealth_Agent_UC_Release") as run:
     mlflow.set_tags({
         "framework": "Databricks Mosaic AI Agent Framework",
         "ontology": "EDMC FIBO v2",
-        "tools_catalog": "wealth_mgmt_catalog",
+        "tools_catalog": "db_ai_strike_team",
         "tools_schema": "fibo_knowledge_graph",
         "governance": "Unity Catalog FastMCP",
     })
@@ -132,6 +151,7 @@ with mlflow.start_run(run_name="AURA_Wealth_Agent_UC_Release") as run:
         artifact_path="aura_wealth_agent",
         python_model=AuraWealthAgentModel(),
         signature=signature,
+        conda_env=conda_env,
         code_paths=[backend_path],
         registered_model_name=registered_model_name
     )
@@ -169,7 +189,7 @@ endpoint_config = EndpointCoreConfigInput(
         )
     ],
     auto_capture_config=AutoCaptureConfigInput(
-        catalog_name="wealth_mgmt_catalog",
+        catalog_name="db_ai_strike_team",
         schema_name="fibo_knowledge_graph",
         table_name_prefix="serving_payload_logs",
         enabled=True
@@ -190,4 +210,3 @@ except Exception as e:
     except Exception as upd_err:
         print(f"⚠️ Serving config note: {upd_err}")
         print(f"You can view and manage this endpoint in the Databricks UI under 'Serving' ➔ '{ENDPOINT_NAME}'.")
-
