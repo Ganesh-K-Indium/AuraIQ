@@ -56,7 +56,7 @@ class AuraWealthAgentModel(mlflow.pyfunc.PythonModel):
 
 def log_agent_to_mlflow(
     experiment_name: str = "AURA_Wealth_Mosaic_Agent",
-    registered_model_name: str = "wealth_mgmt_catalog.fibo_knowledge_graph.aura_wealth_agent",
+    registered_model_name: str = None,
 ) -> str:
     """
     Packages and logs the Agent to MLflow with complete Databricks Model Serving signature.
@@ -64,6 +64,11 @@ def log_agent_to_mlflow(
     Returns:
         The logged model URI (e.g. runs:/<run_id>/aura_wealth_agent).
     """
+    import os
+    catalog = os.getenv("DATABRICKS_CATALOG", "db_ai_strike_team")
+    if not registered_model_name:
+        registered_model_name = f"{catalog}.fibo_knowledge_graph.aura_wealth_agent"
+
     mlflow.set_experiment(experiment_name)
 
     input_schema = Schema([
@@ -80,7 +85,7 @@ def log_agent_to_mlflow(
         mlflow.set_tags({
             "framework": "Databricks Mosaic AI Agent Framework",
             "ontology": "EDMC FIBO v2",
-            "tools_catalog": "wealth_mgmt_catalog",
+            "tools_catalog": catalog,
             "tools_schema": "fibo_knowledge_graph",
             "governance": "FastMCP 2.0",
         })

@@ -13,31 +13,31 @@ interface ToolDef {
 const TOOLS: ToolDef[] = [
   {
     name: "get_client_profile_and_holdings",
-    catalog_path: "wealth_mgmt_catalog.fibo_knowledge_graph.get_client_profile_and_holdings",
+    catalog_path: "db_ai_strike_team.fibo_knowledge_graph.get_client_profile_and_holdings",
     description: "Fetches complete HNW client profile, risk tolerance, and multi-asset portfolio holdings via FIBO graph traversal.",
     defaultParams: { client_id: "HNW-CLIENT-001" },
   },
   {
     name: "check_portfolio_risk_suitability",
-    catalog_path: "wealth_mgmt_catalog.fibo_knowledge_graph.check_portfolio_risk_suitability",
+    catalog_path: "db_ai_strike_team.fibo_knowledge_graph.check_portfolio_risk_suitability",
     description: "Evaluates whether portfolio allocations comply with client risk mandate and SEC Reg BI policy limits.",
     defaultParams: { client_id: "HNW-CLIENT-001", portfolio_id: "PORT-VS-GROWTH-01" },
   },
   {
     name: "find_correlated_exposure",
-    catalog_path: "wealth_mgmt_catalog.fibo_knowledge_graph.find_correlated_exposure",
+    catalog_path: "db_ai_strike_team.fibo_knowledge_graph.find_correlated_exposure",
     description: "Identifies systemic concentration risk and sector exposure across all portfolios in the wealth book.",
     defaultParams: { sector: "Technology", min_allocation_pct: 0.05 },
   },
   {
     name: "analyze_client_tax_and_trust_structure",
-    catalog_path: "wealth_mgmt_catalog.fibo_knowledge_graph.analyze_client_tax_and_trust_structure",
+    catalog_path: "db_ai_strike_team.fibo_knowledge_graph.analyze_client_tax_and_trust_structure",
     description: "Analyzes multi-entity wealth structures, irrevocable trusts, and estate beneficiary stakes.",
     defaultParams: { client_id: "HNW-CLIENT-001" },
   },
   {
     name: "query_fibo_knowledge_graph",
-    catalog_path: "wealth_mgmt_catalog.fibo_knowledge_graph.query_fibo_knowledge_graph",
+    catalog_path: "db_ai_strike_team.fibo_knowledge_graph.query_fibo_knowledge_graph",
     description: "Executes a controlled, read-only Cypher query with strict mutation guards.",
     defaultParams: { cypher_query: "MATCH (p:InvestmentPortfolio) RETURN p.name AS name, p.total_aum AS aum" },
   },
@@ -88,7 +88,7 @@ export const UCToolRegistry: React.FC = () => {
             </h2>
           </div>
           <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
-            Standardized Python & SQL functions registered under <code className="font-mono text-amber-700 dark:text-amber-300">wealth_mgmt_catalog.fibo_knowledge_graph</code>
+            Standardized Python & SQL functions registered under <code className="font-mono text-amber-700 dark:text-amber-300">db_ai_strike_team.fibo_knowledge_graph</code>
           </p>
         </div>
       </div>

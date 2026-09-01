@@ -28,7 +28,7 @@
 # MAGIC CREATE OR REPLACE TABLE dim_clients (
 # MAGIC   client_id STRING NOT NULL COMMENT 'Unique Client ID matching HNW-CLIENT-XXX',
 # MAGIC   name STRING NOT NULL COMMENT 'Full Legal Name',
-# MAGIC   net_worth_tier STRING COMMENT 'Net Worth Category (Ultra-HNW, HNW)',
+# MAGIC   net_worth_tier STRING COMMENT 'Net Worth Category: Ultra-HNW or HNW',
 # MAGIC   tax_residence STRING COMMENT 'Primary Tax Domicile (e.g. Delaware, Florida)',
 # MAGIC   kyc_status STRING COMMENT 'KYC Verification Status',
 # MAGIC   accredited_investor BOOLEAN COMMENT 'SEC Accredited Investor Flag',
@@ -37,9 +37,9 @@
 # MAGIC COMMENT 'FIBO Person & Wealth Client Master Dimension';
 # MAGIC 
 # MAGIC INSERT INTO dim_clients VALUES
-# MAGIC   ('HNW-CLIENT-001', 'Victoria Sterling', 'Ultra-HNW (25M+ USD)', 'Delaware', 'VERIFIED_TIER_1', true, current_timestamp()),
-# MAGIC   ('HNW-CLIENT-002', 'Marcus Thorne', 'High-Net-Worth (5M-10M USD)', 'Florida', 'VERIFIED_TIER_1', true, current_timestamp()),
-# MAGIC   ('HNW-CLIENT-003', 'Elena Rostova', 'Ultra-HNW (50M+ USD)', 'New York', 'VERIFIED_TIER_1', true, current_timestamp());
+# MAGIC   ('HNW-CLIENT-001', 'Victoria Sterling', 'Ultra-HNW', 'Delaware', 'VERIFIED_TIER_1', true, current_timestamp()),
+# MAGIC   ('HNW-CLIENT-002', 'Marcus Thorne', 'HNW', 'Florida', 'VERIFIED_TIER_1', true, current_timestamp()),
+# MAGIC   ('HNW-CLIENT-003', 'Elena Rostova', 'Ultra-HNW', 'New York', 'VERIFIED_TIER_1', true, current_timestamp());
 # MAGIC 
 # MAGIC SELECT * FROM dim_clients;
 
@@ -145,14 +145,14 @@
 # MAGIC COMMENT 'FIBO Fact Holdings Snapshot Table';
 # MAGIC 
 # MAGIC INSERT INTO fact_holdings VALUES
-# MAGIC   -- Victoria Sterling Portfolio (12.5M USD Total - Overweight Tech at 51.2%)
+# MAGIC   -- Victoria Sterling Portfolio (Overweight Tech at 51.2%)
 # MAGIC   ('HLD-VS-001', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-NVDA', 'NVDA', 'NVIDIA Corporation', 'Equities', 'Technology', 0.2800, 3500000.0, 1800000.0, current_date()),
 # MAGIC   ('HLD-VS-002', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-AAPL', 'AAPL', 'Apple Inc.', 'Equities', 'Technology', 0.2320, 2900000.0, 1950000.0, current_date()),
 # MAGIC   ('HLD-VS-003', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'EQ-LLY',  'LLY',  'Eli Lilly and Company', 'Equities', 'Healthcare', 0.1280, 1600000.0, 1100000.0, current_date()),
 # MAGIC   ('HLD-VS-004', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'BD-UST-5Y', 'UST-5Y', 'US Treasury 5-Year Benchmark Note', 'Fixed Income', 'Government', 0.2400, 3000000.0, 3000000.0, current_date()),
 # MAGIC   ('HLD-VS-005', 'PORT-VS-GROWTH-01', 'HNW-CLIENT-001', 'ALT-PE-01', 'VC-FUND-I', 'Apex Global Venture Capital Fund IV', 'Alternatives', 'Private Equity', 0.1200, 1500000.0, 1500000.0, current_date()),
 # MAGIC 
-# MAGIC   -- Marcus Thorne Portfolio (6.0M USD Total - Conservative Mandate 70% Fixed Income)
+# MAGIC   -- Marcus Thorne Portfolio (Conservative Mandate 70% Fixed Income)
 # MAGIC   ('HLD-MT-001', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'BD-UST-5Y', 'UST-5Y', 'US Treasury 5-Year Benchmark Note', 'Fixed Income', 'Government', 0.4500, 2700000.0, 2700000.0, current_date()),
 # MAGIC   ('HLD-MT-002', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'BD-CORP-A', 'APPL-BOND', 'Apple Inc. Senior Notes 2028', 'Fixed Income', 'Technology', 0.2500, 1500000.0, 1500000.0, current_date()),
 # MAGIC   ('HLD-MT-003', 'PORT-MT-INCOME-02', 'HNW-CLIENT-002', 'EQ-JPM',  'JPM',  'JPMorgan Chase & Co.', 'Equities', 'Financials', 0.2000, 1200000.0, 950000.0, current_date()),

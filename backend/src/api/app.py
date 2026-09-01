@@ -146,7 +146,7 @@ def get_system_health():
         "status": "HEALTHY",
         "neo4j_connected": True,
         "mcp_server": "ONLINE",
-        "databricks_catalog": "wealth_mgmt_catalog",
+        "databricks_catalog": os.getenv("DATABRICKS_CATALOG", "db_ai_strike_team"),
         "databricks_schema": "fibo_knowledge_graph",
         "nodes": node_count_res[0]["count"] if node_count_res else 0,
         "relationships": rel_count_res[0]["count"] if rel_count_res else 0,
@@ -484,7 +484,7 @@ def execute_uc_tool(request: ToolExecutionRequest):
         return {
             "status": "SUCCESS",
             "tool": tool_name,
-            "catalog_path": f"wealth_mgmt_catalog.fibo_knowledge_graph.{tool_name}",
+            "catalog_path": f"{os.getenv('DATABRICKS_CATALOG', 'db_ai_strike_team')}.fibo_knowledge_graph.{tool_name}",
             "result": result,
         }
     except Exception as e:
