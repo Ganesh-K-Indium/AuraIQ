@@ -10,6 +10,10 @@
 # MAGIC > 2. **FIBO Knowledge Graph in Neo4j**: Loads FIBO schema constraints, nodes, and multi-hop relationships.
 
 # COMMAND ----------
+# MAGIC %pip install structlog neo4j python-dotenv
+# MAGIC dbutils.library.restartPython()
+
+# COMMAND ----------
 # MAGIC %md
 # MAGIC ### Step 1: Set Catalog and Schema
 
